@@ -37,11 +37,7 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
 .screen.active { display: flex; }
 
 /* ── SHARED HEADER ── */
-.page-header {
-  background: var(--green-dark); padding: 2.8rem 1.25rem 1rem;
-  display: flex; align-items: center; gap: 12px;
-  border-bottom: 3px solid var(--gold-bdr); flex-shrink: 0;
-}
+
 .page-header h2 {
   font-family: 'DM Serif Display', serif; font-size: 1.5rem;
   font-style: italic; color: #f5f0e8; flex: 1;
@@ -94,66 +90,18 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
 .hcp-preview .val { font-family: 'DM Serif Display', serif; font-size: 2.2rem; font-style: italic; color: var(--gold); }
 .hcp-preview .sublbl { font-size: 11px; color: var(--gold); opacity: 0.65; margin-top: 2px; }
 
-.btn-row { display: flex; gap: 10px; margin-top: auto; }
-.btn-start {
-  flex: 1; background: var(--green-dark); color: #f5f0e8; border: none;
-  border-radius: 12px; font-family: 'DM Mono', monospace;
-  font-size: 14px; font-weight: 500; letter-spacing: 0.1em;
-  text-transform: uppercase; padding: 18px;
-  cursor: pointer; transition: background 0.15s, transform 0.1s; -webkit-appearance: none;
-}
+
 .btn-start:active { background: var(--green-mid); transform: scale(0.98); }
-.btn-course-cfg {
-  background: var(--surface); color: var(--ink2);
-  border: 1.5px solid #d8d0bc; border-radius: 12px;
-  font-family: 'DM Mono', monospace; font-size: 13px;
-  padding: 18px 16px; cursor: pointer; white-space: nowrap;
-  -webkit-appearance: none; transition: background 0.15s;
-}
-.btn-course-cfg:active { background: var(--bg2); }
+
 
 /* ── COURSE CONFIG ── */
-#courseScreen { background: var(--bg); overflow-y: auto; }
-.course-body { padding: 1rem 1.25rem 2rem; }
 
-.course-name-row { margin-bottom: 1.25rem; }
-.course-name-row input {
-  background: var(--surface); border: 1.5px solid #d8d0bc;
-  border-radius: 10px; color: var(--ink);
-  font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 500;
-  padding: 12px 16px; width: 100%; outline: none; -webkit-appearance: none;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06); transition: border-color 0.2s;
-}
-.course-name-row input:focus { border-color: var(--green-mid); }
-.course-name-row label {
-  font-family: 'DM Mono', monospace; font-size: 10px;
-  letter-spacing: 0.15em; text-transform: uppercase;
-  color: var(--ink3); display: block; margin-bottom: 5px;
-}
 
-.holes-grid {
-  display: grid; gap: 8px;
-}
-.hole-cfg-row {
-  background: var(--surface); border-radius: 10px;
-  border: 1px solid #ddd8cc;
-  display: grid; grid-template-columns: 36px 1fr 1fr;
-  align-items: center; gap: 0;
-  overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-}
-.hole-cfg-num {
-  font-family: 'DM Serif Display', serif; font-size: 1.2rem;
-  font-style: italic; color: var(--ink3);
-  text-align: center; padding: 0 4px;
-  border-right: 1px solid #eee8dc;
-  align-self: stretch; display: flex; align-items: center; justify-content: center;
-  background: #faf8f2;
-}
-.hole-cfg-field {
-  display: flex; flex-direction: column; padding: 8px 12px;
-  border-right: 1px solid #eee8dc;
-}
+
+
+
+
+
 .hole-cfg-field:last-child { border-right: none; }
 .hole-cfg-field span {
   font-family: 'DM Mono', monospace; font-size: 9px;
@@ -166,22 +114,10 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
   -webkit-appearance: none; appearance: none;
 }
 
-.section-sep {
-  height: 1px; background: var(--green-pale); margin: 12px 0 10px;
-}
-.section-label-sm {
-  font-family: 'DM Mono', monospace; font-size: 10px;
-  letter-spacing: 0.15em; text-transform: uppercase;
-  color: var(--green); margin-bottom: 8px;
-}
 
-.btn-save-course {
-  width: 100%; background: var(--green-dark); color: #f5f0e8; border: none;
-  border-radius: 12px; font-family: 'DM Mono', monospace;
-  font-size: 14px; font-weight: 500; letter-spacing: 0.1em;
-  text-transform: uppercase; padding: 18px; margin-top: 1.25rem;
-  cursor: pointer; -webkit-appearance: none; transition: background 0.15s;
-}
+
+
+
 .btn-save-course:active { background: var(--green-mid); }
 
 /* ── PLAY ── */
@@ -336,60 +272,25 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
       <label>Mon index</label>
       <input type="number" id="sIndex" inputmode="decimal" min="0" max="54" step="0.1" value="54.0">
     </div>
-    <div class="row2">
-      <div class="field-group">
-        <label>Slope</label>
-        <input type="number" id="sSlope" inputmode="numeric" min="55" max="155" value="113">
-      </div>
-      <div class="field-group">
-        <label>Course Rating</label>
-        <input type="number" id="sCR" inputmode="decimal" min="60" max="80" step="0.1" value="72.0">
-      </div>
+    <div class="field-group">
+      <label>Nb de trous</label>
+      <select id="sHoles">
+        <option value="18">18 trous</option>
+        <option value="9">9 trous</option>
+      </select>
     </div>
-    <div class="row2">
-      <div class="field-group">
-        <label>Par du parcours</label>
-        <input type="number" id="sPar" inputmode="numeric" min="68" max="74" value="72">
-      </div>
-      <div class="field-group">
-        <label>Nb de trous</label>
-        <select id="sHoles" onchange="onNbHolesChange()">
-          <option value="18">18 trous</option>
-          <option value="9">9 trous</option>
-        </select>
-      </div>
-    </div>
+    <!-- hidden fields used by JS -->
+    <input type="hidden" id="sSlope" value="113">
+    <input type="hidden" id="sCR" value="72.0">
+    <input type="hidden" id="sPar" value="72">
     <div class="hcp-preview">
       <div>
         <div class="lbl">Handicap de jeu</div>
-        <div class="sublbl">Index × Slope/113 + (CR−Par)</div>
+        <div class="sublbl" id="courseNameLabel">Chargement...</div>
       </div>
       <div class="val" id="hcpPreview">54</div>
     </div>
-    <div class="btn-row">
-      <button class="btn-course-cfg" onclick="showCourse()">⛳ Parcours</button>
-      <button class="btn-start" onclick="startGame()">Jouer ▶</button>
-    </div>
-  </div>
-</div>
-
-<!-- ══ COURSE CONFIG ══ -->
-<div id="courseScreen" class="screen">
-  <div class="page-header">
-    <button class="btn-back" onclick="showScreen('setupScreen')">←</button>
-    <h2>Configurer le parcours</h2>
-  </div>
-  <div class="course-body" style="overflow-y:auto;flex:1;">
-    <div class="course-name-row" style="margin-top:1rem;">
-      <label>Nom du parcours</label>
-      <input type="text" id="courseName" placeholder="Ex : Golf de Saint-Denis" maxlength="40">
-    </div>
-    <div class="section-label-sm">Aller — trous 1 à 9</div>
-    <div class="holes-grid" id="holesGridFront"></div>
-    <div class="section-sep"></div>
-    <div class="section-label-sm" id="backLabel">Retour — trous 10 à 18</div>
-    <div class="holes-grid" id="holesGridBack"></div>
-    <button class="btn-save-course" onclick="saveCourse()">Enregistrer ✓</button>
+    <button class="btn-start" onclick="startGame()">Jouer ▶</button>
   </div>
 </div>
 
@@ -531,101 +432,30 @@ function getDiffLabel(net,par){
 // ── Setup screen
 function updateHcpPreview(){
   const idx=parseFloat(document.getElementById('sIndex').value)||0;
-  const slope=parseFloat(document.getElementById('sSlope').value)||113;
-  const cr=parseFloat(document.getElementById('sCR').value)||72;
-  const par=parseFloat(document.getElementById('sPar').value)||72;
-  document.getElementById('hcpPreview').textContent=calcHcp(idx,slope,cr,par);
-}
-['sIndex','sSlope','sCR','sPar'].forEach(id=>document.getElementById(id).addEventListener('input',updateHcpPreview));
-
-function onNbHolesChange(){
   const n=parseInt(document.getElementById('sHoles').value)||18;
-  // update par field to match course config
-  const total=(n===9?courseConfig.pars9:courseConfig.pars18).reduce((a,b)=>a+b,0);
-  document.getElementById('sPar').value=total;
-  updateHcpPreview();
+  const pars=n===9?COURSE.par9:COURSE.par18;
+  const par=pars.reduce((a,b)=>a+b,0);
+  document.getElementById('hcpPreview').textContent=calcHcp(idx,COURSE.slope,COURSE.courseRating,par);
 }
+document.getElementById('sIndex').addEventListener('input',updateHcpPreview);
+document.getElementById('sHoles').addEventListener('change',updateHcpPreview);
+
 
 function startGame(){
   state.index    = parseFloat(document.getElementById('sIndex').value)||0;
-  state.slope    = parseFloat(document.getElementById('sSlope').value)||113;
-  state.cr       = parseFloat(document.getElementById('sCR').value)||72;
-  state.coursePar= parseFloat(document.getElementById('sPar').value)||72;
   state.nbHoles  = parseInt(document.getElementById('sHoles').value)||18;
-  state.playingHcp = calcHcp(state.index,state.slope,state.cr,state.coursePar);
-  state.pars    = state.nbHoles===9 ? [...courseConfig.pars9]    : [...courseConfig.pars18];
-  state.hcpIdxs = state.nbHoles===9 ? [...courseConfig.hcpIdxs9] : [...courseConfig.hcpIdxs18];
+  const slope    = COURSE.slope;
+  const cr       = COURSE.courseRating;
+  const pars     = state.nbHoles===9 ? COURSE.par9 : COURSE.par18;
+  state.coursePar= pars.reduce((a,b)=>a+b,0);
+  state.playingHcp = calcHcp(state.index, slope, cr, state.coursePar);
+  state.pars    = [...pars];
+  state.hcpIdxs = state.nbHoles===9 ? [...COURSE.handicap9] : [...COURSE.handicap18];
   state.scores  = new Array(state.nbHoles).fill(null);
   state.current = 0;
   showPlay();
 }
 function goSetup(){ showScreen('setupScreen'); }
-
-// ── Course config screen
-function showCourse(){
-  const n = parseInt(document.getElementById('sHoles').value)||18;
-  buildCourseGrid(n);
-  document.getElementById('courseName').value = courseConfig.name;
-  showScreen('courseScreen');
-}
-
-function buildCourseGrid(n){
-  const frontEl = document.getElementById('holesGridFront');
-  const backEl  = document.getElementById('holesGridBack');
-  const backLbl = document.getElementById('backLabel');
-  const pars    = n===9 ? courseConfig.pars9    : courseConfig.pars18;
-  const hcps    = n===9 ? courseConfig.hcpIdxs9 : courseConfig.hcpIdxs18;
-
-  frontEl.innerHTML = '';
-  backEl.innerHTML  = '';
-  backLbl.style.display = n===9 ? 'none' : '';
-  backEl.style.display  = n===9 ? 'none' : '';
-
-  for(let i=0;i<n;i++){
-    const row = document.createElement('div');
-    row.className = 'hole-cfg-row';
-    row.innerHTML = `
-      <div class="hole-cfg-num">${i+1}</div>
-      <div class="hole-cfg-field">
-        <span>Par</span>
-        <input type="number" inputmode="numeric" min="3" max="6" value="${pars[i]}" data-i="${i}" data-t="par">
-      </div>
-      <div class="hole-cfg-field">
-        <span>Handicap</span>
-        <input type="number" inputmode="numeric" min="1" max="${n}" value="${hcps[i]}" data-i="${i}" data-t="hcp">
-      </div>
-    `;
-    if(i<9) frontEl.appendChild(row);
-    else    backEl.appendChild(row);
-  }
-}
-
-function saveCourse(){
-  const n = parseInt(document.getElementById('sHoles').value)||18;
-  courseConfig.name  = document.getElementById('courseName').value.trim();
-  courseConfig.slope = parseFloat(document.getElementById('sSlope').value)||113;
-  courseConfig.cr    = parseFloat(document.getElementById('sCR').value)||72;
-
-  const parKey = n===9 ? 'pars9'    : 'pars18';
-  const hcpKey = n===9 ? 'hcpIdxs9' : 'hcpIdxs18';
-
-  document.querySelectorAll('#holesGridFront input, #holesGridBack input').forEach(inp=>{
-    const i   = parseInt(inp.dataset.i);
-    const val = parseInt(inp.value);
-    if(isNaN(val)) return;
-    if(inp.dataset.t==='par') courseConfig[parKey][i] = Math.min(6,Math.max(3,val));
-    else                       courseConfig[hcpKey][i] = Math.min(n,Math.max(1,val));
-  });
-
-  // update par total in setup
-  const total = courseConfig[parKey].reduce((a,b)=>a+b,0);
-  document.getElementById('sPar').value = total;
-  updateHcpPreview();
-
-  // persist to localStorage
-  saveCourseToStorage();
-  showScreen('setupScreen');
-}
 
 // ── Score logic
 function adjustScore(delta){
@@ -771,12 +601,13 @@ function resumeGame(){
   showPlay();
 }
 
-// Pré-remplir setup depuis courseConfig (COURSE ou localStorage)
+// Init: set hidden fields from COURSE config
 (function initSetup(){
-  if(courseConfig.slope) document.getElementById('sSlope').value = courseConfig.slope;
-  if(courseConfig.cr)    document.getElementById('sCR').value    = courseConfig.cr;
-  const total = courseConfig.pars18.reduce((a,b)=>a+b,0);
-  document.getElementById('sPar').value = total;
+  document.getElementById('sSlope').value = COURSE.slope;
+  document.getElementById('sCR').value    = COURSE.courseRating;
+  document.getElementById('sPar').value   = COURSE.par18.reduce((a,b)=>a+b,0);
+  document.getElementById('courseNameLabel').textContent =
+    COURSE.name + ' · Slope ' + COURSE.slope + ' · CR ' + COURSE.courseRating;
 })();
 updateHcpPreview();
 </script>
