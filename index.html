@@ -95,15 +95,7 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
 .hcp-preview .sublbl { font-size: 11px; color: var(--gold); opacity: 0.65; margin-top: 2px; }
 
 .btn-row { display: flex; gap: 10px; margin-top: auto; }
-.btn-start {
-  width: 100%; background: var(--green-dark); color: #f5f0e8; border: none;
-  border-radius: 16px; font-family: 'DM Mono', monospace;
-  font-size: 16px; font-weight: 500; letter-spacing: 0.12em;
-  text-transform: uppercase; padding: 22px;
-  cursor: pointer; transition: background 0.15s, transform 0.1s; -webkit-appearance: none;
-  margin-top: auto; min-height: 64px;
-}
-.btn-start:active { background: var(--green-mid); transform: scale(0.98); }
+
 .btn-course-cfg {
   background: var(--surface); color: var(--ink2);
   border: 1.5px solid #d8d0bc; border-radius: 12px;
@@ -322,6 +314,45 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
 
 @keyframes pop { 0%{transform:scale(0.85);opacity:0} 60%{transform:scale(1.06)} 100%{transform:scale(1);opacity:1} }
 .pop { animation: pop 0.2s ease both; }
+
+/* Fix overflow bug on sc-subtotal (iPhone bottom-left) */
+.sc-subtotal { overflow: hidden; }
+.sc-subtotal > * { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Différentiel WHS banner */
+.diff-banner {
+  margin: 1rem 1.25rem 0.5rem;
+  border-radius: 12px; padding: 1rem 1.25rem;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.diff-banner.diff-good { background: var(--eagle-bg); border: 1px solid #a0d8bc; }
+.diff-banner.diff-neutral { background: var(--gold-bg); border: 1px solid var(--gold-bdr); }
+.diff-banner-label {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 0.12em; text-transform: uppercase;
+}
+.diff-banner.diff-good .diff-banner-label { color: var(--eagle); }
+.diff-banner.diff-neutral .diff-banner-label { color: var(--gold); }
+.diff-banner-val {
+  font-family: 'DM Serif Display', serif; font-size: 2rem;
+  font-style: italic; line-height: 1;
+}
+.diff-banner.diff-good .diff-banner-val { color: var(--eagle); }
+.diff-banner.diff-neutral .diff-banner-val { color: var(--gold); }
+.diff-banner-sub { font-size: 12px; opacity: 0.7; }
+.diff-banner.diff-good .diff-banner-sub { color: var(--eagle); }
+.diff-banner.diff-neutral .diff-banner-sub { color: var(--gold); }
+
+/* btn-start standalone (no flex parent) */
+.btn-start {
+  width: 100%; background: var(--green-dark); color: #f5f0e8; border: none;
+  border-radius: 16px; font-family: 'DM Mono', monospace;
+  font-size: 16px; font-weight: 500; letter-spacing: 0.12em;
+  text-transform: uppercase; padding: 22px;
+  cursor: pointer; margin-top: auto; min-height: 64px;
+  transition: background 0.15s, transform 0.1s; -webkit-appearance: none;
+}
+.btn-start:active { background: var(--green-mid); transform: scale(0.98); }
 </style>
 </head>
 <body>
@@ -338,21 +369,41 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
       <input type="number" id="sIndex" inputmode="decimal" min="0" max="54" step="0.1" value="54.0">
     </div>
     <div class="field-group">
-      <label>Nb de trous</label>
-      <select id="sHoles">
-        <option value="18">18 trous</option>
-        <option value="9">9 trous</option>
+      <label>Mode de jeu</label>
+      <select id="sMode" onchange="updateHcpPreview()">
+        <option value="18">18 trous (T1 → T18)</option>
+        <option value="9f">9 trous — Aller (T1 → T9)</option>
+        <option value="9b">9 trous — Retour (T10 → T18)</option>
       </select>
     </div>
-    <input type="hidden" id="sSlope"><input type="hidden" id="sCR"><input type="hidden" id="sPar">
     <div class="hcp-preview">
       <div>
         <div class="lbl">Handicap de jeu</div>
-        <div class="sublbl">Index × Slope/113 + (CR−Par)</div>
+        <div class="sublbl" id="courseNameLabel">—</div>
       </div>
       <div class="val" id="hcpPreview">54</div>
     </div>
     <button class="btn-start" onclick="startGame()">Jouer ▶</button>
+  </div>
+</div>
+
+<!-- ══ COURSE CONFIG ══ -->
+<div id="courseScreen" class="screen">
+  <div class="page-header">
+    <button class="btn-back" onclick="showScreen('setupScreen')">←</button>
+    <h2>Configurer le parcours</h2>
+  </div>
+  <div class="course-body" style="overflow-y:auto;flex:1;">
+    <div class="course-name-row" style="margin-top:1rem;">
+      <label>Nom du parcours</label>
+      <input type="text" id="courseName" placeholder="Ex : Golf de Saint-Denis" maxlength="40">
+    </div>
+    <div class="section-label-sm">Aller — trous 1 à 9</div>
+    <div class="holes-grid" id="holesGridFront"></div>
+    <div class="section-sep"></div>
+    <div class="section-label-sm" id="backLabel">Retour — trous 10 à 18</div>
+    <div class="holes-grid" id="holesGridBack"></div>
+    <button class="btn-save-course" onclick="saveCourse()">Enregistrer ✓</button>
   </div>
 </div>
 
@@ -409,336 +460,287 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
 const COURSE = {
 
   // Nom affiché sur la scorecard
-  name: "Golf de Bourbon",
+  name: "Mon Golf",
 
   // Slope et Course Rating (indiqués sur la carte de score du club)
-  slope: 131,
-  courseRating: 70.7,
+  slope: 113,
+  courseRating: 73.0,
 
   // ── 18 TROUS ──────────────────────────────────────────────────
   //             T1  T2  T3  T4  T5  T6  T7  T8  T9  T10 T11 T12 T13 T14 T15 T16 T17 T18
   par18:       [  4,  5,  4,  4,  3,  5,  3,  4,  4,   4,  4,  3,  5,  3,  4,  5,  4,  4 ],
-  handicap18:  [  18, 17, 10,  15,  12, 11,  16, 3,  1,   9, 7,  13, 8,  14, 6,  5, 4, 2 ],
+  handicap18:  [ 18, 17, 10, 15, 12, 11, 16,  3,  1,   9,  7, 13,  8, 14,  6,  5,  4,  2 ],
   //  ^ index de difficulté du trou (1 = plus difficile, 18 = plus facile)
 
-  // ── 9 TROUS (si tu joues en 9 trous) ──────────────────────────
-  //             T1  T2  T3  T4  T5  T6  T7  T8  T9
-  par9:        [  4,  5,  4,  4,  3,  5,  3,  4,  4 ],
-  handicap9:   [  18, 17, 10,  15,  12, 11,  16,  3,  1 ],
-
 };
 
-// ── Defaults (fallback interne — ne pas modifier)
-const D_PAR_18 = COURSE.par18;
-const D_HCP_18 = COURSE.handicap18;
-const D_PAR_9  = COURSE.par9;
-const D_HCP_9  = COURSE.handicap9;
+// ══════════════════════════════════════════════════════════════
+//  NE PAS MODIFIER EN DESSOUS
+// ══════════════════════════════════════════════════════════════
 
-// ── Course config (persisted in localStorage)
-function loadCourseConfig(){
-  try {
-    const saved = localStorage.getItem('golf_course');
-    if(saved){
-      const p = JSON.parse(saved);
-      if(Array.isArray(p.pars18) && p.pars18.length===18 &&
-         Array.isArray(p.hcpIdxs18) && p.hcpIdxs18.length===18 &&
-         Array.isArray(p.pars9) && p.pars9.length===9 &&
-         Array.isArray(p.hcpIdxs9) && p.hcpIdxs9.length===9){
-        return p;
-      }
-    }
-  } catch(e){}
-  // Aucune sauvegarde → on utilise le bloc COURSE défini en haut
-  return {
-    name:      COURSE.name,
-    slope:     COURSE.slope,
-    cr:        COURSE.courseRating,
-    pars18:    [...COURSE.par18],
-    hcpIdxs18: [...COURSE.handicap18],
-    pars9:     [...COURSE.par9],
-    hcpIdxs9:  [...COURSE.handicap9],
-  };
-}
-function saveCourseToStorage(){
-  try { localStorage.setItem('golf_course', JSON.stringify(courseConfig)); } catch(e){}
-}
-let courseConfig = loadCourseConfig();
+// ── Helpers calcul
+function calcHcp(idx, slope, cr, par){ return Math.round(idx * (slope / 113) + (cr - par)); }
+function getCoupsAlloues(hcp, hi){ return Math.floor(hcp/18) + (hi <= (hcp%18) ? 1 : 0); }
+function stbNet(net, par){ return net === null ? null : Math.max(0, par - net + 2); }
 
-// ── Game state
+// Calcul du différentiel de score (pour l'index) selon WHS
+// Différentiel = (Score brut - Course Rating) × (113 / Slope) × PCC (simplifié sans PCC)
+function calcDifferentiel(brutTotal, slope, cr){
+  return Math.round(((brutTotal - cr) * (113 / slope)) * 10) / 10;
+}
+
+function getDiffClass(net, par){
+  if(net === null) return 'empty';
+  const d = net - par;
+  if(d <= -2) return 'eagle'; if(d === -1) return 'birdie';
+  if(d === 0) return 'par';   if(d === 1)  return 'bogey';
+  if(d === 2) return 'double'; return 'worse';
+}
+function getDiffLabel(net, par){
+  if(net === null) return '';
+  const d = net - par;
+  if(d <= -2) return d === -2 ? 'Eagle' : 'Albatros';
+  if(d === -1) return 'Birdie'; if(d === 0) return 'Par';
+  if(d === 1)  return 'Bogey';  if(d === 2) return '+2';
+  return '+' + d;
+}
+
+// ── État de la partie
 let state = {
-  index:54, slope:113, cr:72, coursePar:72,
-  nbHoles:18, playingHcp:54,
-  pars:[], hcpIdxs:[], scores:[], current:0
+  index: 54, nbHoles: 18, startHole: 0,
+  playingHcp: 54, coursePar: 72,
+  pars: [], hcpIdxs: [], scores: [], current: 0
 };
 
-// ── Helpers
-function calcHcp(idx,slope,cr,par){ return Math.round(idx*(slope/113)+(cr-par)); }
-function getCoupsAlloues(hcp,hi){ return Math.floor(hcp/18)+(hi<=(hcp%18)?1:0); }
-function stbNet(net,par){ return net===null?null:Math.max(0,par-net+2); }
-function getDiffClass(net,par){
-  if(net===null) return 'empty';
-  const d=net-par;
-  if(d<=-2) return 'eagle'; if(d===-1) return 'birdie';
-  if(d===0) return 'par';   if(d===1)  return 'bogey';
-  if(d===2) return 'double'; return 'worse';
-}
-function getDiffLabel(net,par){
-  if(net===null) return '';
-  const d=net-par;
-  if(d<=-2) return d===-2?'Eagle':'Albatros';
-  if(d===-1) return 'Birdie'; if(d===0) return 'Par';
-  if(d===1)  return 'Bogey';  if(d===2) return '+2';
-  return '+'+d;
-}
+// ── Setup
+function getMode(){ return (document.getElementById('sMode') || {value:'18'}).value; }
 
-// ── Setup screen
 function updateHcpPreview(){
-  const idx = parseFloat(document.getElementById('sIndex').value)||0;
-  const n   = parseInt(document.getElementById('sHoles').value)||18;
-  const par = (n===9 ? COURSE.par9 : COURSE.par18).reduce((a,b)=>a+b,0);
+  const idx  = parseFloat(document.getElementById('sIndex').value) || 0;
+  const mode = getMode();
+  let par;
+  if(mode === '18')      par = COURSE.par18.reduce((a,b)=>a+b,0);
+  else if(mode === '9f') par = COURSE.par18.slice(0,9).reduce((a,b)=>a+b,0);
+  else                   par = COURSE.par18.slice(9).reduce((a,b)=>a+b,0);
   document.getElementById('hcpPreview').textContent = calcHcp(idx, COURSE.slope, COURSE.courseRating, par);
+  const lbl = document.getElementById('courseNameLabel');
+  if(lbl) lbl.textContent = COURSE.name + ' · Slope ' + COURSE.slope + ' · CR ' + COURSE.courseRating;
 }
-document.getElementById('sIndex').addEventListener('input', updateHcpPreview);
-document.getElementById('sHoles').addEventListener('change', updateHcpPreview);
 
-function onNbHolesChange(){
-  const n=parseInt(document.getElementById('sHoles').value)||18;
-  // update par field to match course config
-  const total=(n===9?courseConfig.pars9:courseConfig.pars18).reduce((a,b)=>a+b,0);
-  document.getElementById('sPar').value=total;
-  updateHcpPreview();
-}
+document.getElementById('sIndex').addEventListener('input', updateHcpPreview);
 
 function startGame(){
-  state.index   = parseFloat(document.getElementById('sIndex').value)||0;
-  state.nbHoles = parseInt(document.getElementById('sHoles').value)||18;
-  const pars    = state.nbHoles===9 ? COURSE.par9    : COURSE.par18;
-  const hcps    = state.nbHoles===9 ? COURSE.handicap9 : COURSE.handicap18;
-  state.coursePar   = pars.reduce((a,b)=>a+b,0);
-  state.playingHcp  = calcHcp(state.index, COURSE.slope, COURSE.courseRating, state.coursePar);
-  state.pars    = [...pars];
-  state.hcpIdxs = [...hcps];
-  state.scores  = new Array(state.nbHoles).fill(null);
-  state.current = 0;
+  const idx  = parseFloat(document.getElementById('sIndex').value) || 0;
+  const mode = getMode();
+
+  let pars, hcps, startHole, nbHoles;
+  if(mode === '18'){
+    pars = [...COURSE.par18]; hcps = [...COURSE.handicap18];
+    startHole = 0; nbHoles = 18;
+  } else if(mode === '9f'){
+    pars = COURSE.par18.slice(0,9); hcps = COURSE.handicap18.slice(0,9);
+    startHole = 0; nbHoles = 9;
+  } else {
+    pars = COURSE.par18.slice(9); hcps = COURSE.handicap18.slice(9);
+    startHole = 9; nbHoles = 9;
+  }
+
+  const coursePar = pars.reduce((a,b)=>a+b,0);
+  const playingHcp = calcHcp(idx, COURSE.slope, COURSE.courseRating, coursePar);
+
+  state = { index:idx, nbHoles, startHole, playingHcp, coursePar,
+            pars:[...pars], hcpIdxs:[...hcps],
+            scores: new Array(nbHoles).fill(null), current:0 };
   showPlay();
 }
+
 function goSetup(){ showScreen('setupScreen'); }
 
-// ── Course config screen
-function showCourse(){
-  const n = parseInt(document.getElementById('sHoles').value)||18;
-  buildCourseGrid(n);
-  document.getElementById('courseName').value = courseConfig.name;
-  showScreen('courseScreen');
-}
-
-function buildCourseGrid(n){
-  const frontEl = document.getElementById('holesGridFront');
-  const backEl  = document.getElementById('holesGridBack');
-  const backLbl = document.getElementById('backLabel');
-  const pars    = n===9 ? courseConfig.pars9    : courseConfig.pars18;
-  const hcps    = n===9 ? courseConfig.hcpIdxs9 : courseConfig.hcpIdxs18;
-
-  frontEl.innerHTML = '';
-  backEl.innerHTML  = '';
-  backLbl.style.display = n===9 ? 'none' : '';
-  backEl.style.display  = n===9 ? 'none' : '';
-
-  for(let i=0;i<n;i++){
-    const row = document.createElement('div');
-    row.className = 'hole-cfg-row';
-    row.innerHTML = `
-      <div class="hole-cfg-num">${i+1}</div>
-      <div class="hole-cfg-field">
-        <span>Par</span>
-        <input type="number" inputmode="numeric" min="3" max="6" value="${pars[i]}" data-i="${i}" data-t="par">
-      </div>
-      <div class="hole-cfg-field">
-        <span>Handicap</span>
-        <input type="number" inputmode="numeric" min="1" max="${n}" value="${hcps[i]}" data-i="${i}" data-t="hcp">
-      </div>
-    `;
-    if(i<9) frontEl.appendChild(row);
-    else    backEl.appendChild(row);
-  }
-}
-
-function saveCourse(){
-  const n = parseInt(document.getElementById('sHoles').value)||18;
-  courseConfig.name  = document.getElementById('courseName').value.trim();
-  courseConfig.slope = parseFloat(document.getElementById('sSlope').value)||113;
-  courseConfig.cr    = parseFloat(document.getElementById('sCR').value)||72;
-
-  const parKey = n===9 ? 'pars9'    : 'pars18';
-  const hcpKey = n===9 ? 'hcpIdxs9' : 'hcpIdxs18';
-
-  document.querySelectorAll('#holesGridFront input, #holesGridBack input').forEach(inp=>{
-    const i   = parseInt(inp.dataset.i);
-    const val = parseInt(inp.value);
-    if(isNaN(val)) return;
-    if(inp.dataset.t==='par') courseConfig[parKey][i] = Math.min(6,Math.max(3,val));
-    else                       courseConfig[hcpKey][i] = Math.min(n,Math.max(1,val));
-  });
-
-  // update par total in setup
-  const total = courseConfig[parKey].reduce((a,b)=>a+b,0);
-  document.getElementById('sPar').value = total;
-  updateHcpPreview();
-
-  // persist to localStorage
-  saveCourseToStorage();
-  showScreen('setupScreen');
-}
-
-// ── Score logic
+// ── Score
 function adjustScore(delta){
-  const i=state.current, par=state.pars[i];
-  const cur=state.scores[i];
-  if(cur===null){ state.scores[i]=0; }
+  const i = state.current, par = state.pars[i];
+  const cur = state.scores[i];
+  if(cur === null){ state.scores[i] = 0; }
   else {
-    const next=cur+delta;
-    if(next<0||next>par+8) return;
-    state.scores[i]=next;
+    const next = cur + delta;
+    if(next < 0 || next > par + 8) return;
+    state.scores[i] = next;
   }
   renderPlay();
 }
+
 function navigate(dir){
-  const next=state.current+dir;
-  if(next<0) return;
-  if(next>=state.nbHoles){ showScorecard(); return; }
-  state.current=next;
+  const next = state.current + dir;
+  if(next < 0) return;
+  if(next >= state.nbHoles){ showScorecard(); return; }
+  state.current = next;
   renderPlay();
 }
 
 // ── Render play
 function renderPlay(){
-  const i=state.current, par=state.pars[i], hi=state.hcpIdxs[i];
-  const coups=getCoupsAlloues(state.playingHcp,hi);
-  const brut=state.scores[i];
-  const net=brut!==null?brut-coups:null;
+  const i = state.current;
+  const par   = state.pars[i];
+  const hi    = state.hcpIdxs[i];
+  const coups = getCoupsAlloues(state.playingHcp, hi);
+  const brut  = state.scores[i];
+  const net   = brut !== null ? brut - coups : null;
+  const holeDisplay = state.startHole + i + 1;
 
-  document.getElementById('topHoleNum').textContent=i+1;
+  document.getElementById('topHoleNum').textContent = holeDisplay;
 
-  const dotsEl=document.getElementById('holeDots');
-  dotsEl.innerHTML='';
-  for(let j=0;j<state.nbHoles;j++){
-    const d=document.createElement('div');
-    d.className='dot'+(j===i?' current':state.scores[j]!==null?' played':'');
-    d.onclick=(function(jj){return function(){state.current=jj;renderPlay();};})(j);
+  // dots
+  const dotsEl = document.getElementById('holeDots');
+  dotsEl.innerHTML = '';
+  for(let j = 0; j < state.nbHoles; j++){
+    const d = document.createElement('div');
+    d.className = 'dot' + (j === i ? ' current' : state.scores[j] !== null ? ' played' : '');
+    d.onclick = (function(jj){ return function(){ state.current = jj; renderPlay(); }; })(j);
     dotsEl.appendChild(d);
   }
 
-  document.getElementById('infoRow').innerHTML=`
+  document.getElementById('infoRow').innerHTML = `
     <div class="info-pill"><div class="p-label">Par</div><div class="p-val">${par}</div></div>
     <div class="info-pill"><div class="p-label">Idx trou</div><div class="p-val">${hi}</div></div>
-    <div class="info-pill gold-pill"><div class="p-label">Coups +</div><div class="p-val">${coups>0?'+'+coups:'0'}</div></div>
+    <div class="info-pill gold-pill"><div class="p-label">Coups +</div><div class="p-val">${coups > 0 ? '+'+coups : '0'}</div></div>
   `;
 
-  const dc=brut!==null?getDiffClass(net,par):'empty';
-  const sb=document.getElementById('scoreBig');
-  const sl=document.getElementById('scoreLabel');
-  sb.textContent=brut!==null?brut:'—';
-  sb.className='score-big pop '+dc;
-  sl.textContent=getDiffLabel(net,par);
-  sl.className='score-label '+dc;
+  const dc = brut !== null ? getDiffClass(net, par) : 'empty';
+  document.getElementById('scoreBig').textContent  = brut !== null ? brut : '—';
+  document.getElementById('scoreBig').className    = 'score-big pop ' + dc;
+  document.getElementById('scoreLabel').textContent = getDiffLabel(net, par);
+  document.getElementById('scoreLabel').className   = 'score-label ' + dc;
 
-  const stb=stbNet(net,par);
-  document.getElementById('netRow').innerHTML=`
-    <div class="net-badge"><div class="nb-label">Score net</div><div class="nb-val">${net!==null?net:'—'}</div></div>
-    <div class="net-badge"><div class="nb-label">Stableford</div><div class="nb-val">${stb!==null?stb+' pts':'—'}</div></div>
+  const stb = stbNet(net, par);
+  document.getElementById('netRow').innerHTML = `
+    <div class="net-badge"><div class="nb-label">Score net</div><div class="nb-val">${net !== null ? net : '—'}</div></div>
+    <div class="net-badge"><div class="nb-label">Stableford</div><div class="nb-val">${stb !== null ? stb+' pts' : '—'}</div></div>
     <div class="net-badge"><div class="nb-label">Hcp jeu</div><div class="nb-val">${state.playingHcp}</div></div>
   `;
 
-  const btnPrev=document.getElementById('btnPrev');
-  const btnNext=document.getElementById('btnNext');
-  btnPrev.disabled=i===0; btnPrev.style.opacity=i===0?'0.3':'1';
-  const isLast=i===state.nbHoles-1;
-  btnNext.textContent=isLast?'Voir score ▶':'Suiv. →';
-  btnNext.className='btn-nav btn-next'+(isLast?' finish':'');
+  const btnPrev = document.getElementById('btnPrev');
+  const btnNext = document.getElementById('btnNext');
+  btnPrev.disabled = i === 0; btnPrev.style.opacity = i === 0 ? '0.3' : '1';
+  const isLast = i === state.nbHoles - 1;
+  btnNext.textContent = isLast ? 'Voir score ▶' : 'Suiv. →';
+  btnNext.className = 'btn-nav btn-next' + (isLast ? ' finish' : '');
 }
 
 // ── Render scorecard
 function renderScorecard(){
-  const n=state.nbHoles, mid=n===18?9:n;
-  let tBrut=0,tNet=0,tPar=0,tStb=0;
-  let fBrut=0,fNet=0,fPar=0,bBrut=0,bNet=0,bPar=0;
+  const n   = state.nbHoles;
+  const mid = n === 18 ? 9 : n;
+  let tBrut=0, tNet=0, tPar=0, tStb=0;
+  let fBrut=0, fNet=0, fPar=0, bBrut=0, bNet=0, bPar=0;
+  let allPlayed = true;
 
-  for(let i=0;i<n;i++){
-    const par=state.pars[i],hi=state.hcpIdxs[i];
-    const coups=getCoupsAlloues(state.playingHcp,hi);
-    const brut=state.scores[i];
-    const net=brut!==null?brut-coups:null;
-    const stb=stbNet(net,par);
-    tPar+=par;
-    if(brut!==null) tBrut+=brut;
-    if(net!==null)  tNet+=net;
-    if(stb!==null)  tStb+=stb;
-    if(i<mid){fPar+=par;if(brut!==null)fBrut+=brut;if(net!==null)fNet+=net;}
-    else      {bPar+=par;if(brut!==null)bBrut+=brut;if(net!==null)bNet+=net;}
+  for(let i = 0; i < n; i++){
+    const par   = state.pars[i];
+    const hi    = state.hcpIdxs[i];
+    const coups = getCoupsAlloues(state.playingHcp, hi);
+    const brut  = state.scores[i];
+    const net   = brut !== null ? brut - coups : null;
+    const stb   = stbNet(net, par);
+    tPar += par;
+    if(brut !== null){ tBrut += brut; } else { allPlayed = false; }
+    if(net  !== null)  tNet  += net;
+    if(stb  !== null)  tStb  += stb;
+    if(i < mid){
+      fPar += par;
+      if(brut !== null) fBrut += brut;
+      if(net  !== null) fNet  += net;
+    } else {
+      bPar += par;
+      if(brut !== null) bBrut += brut;
+      if(net  !== null) bNet  += net;
+    }
   }
 
-  const diff=tNet-tPar;
-  const diffStr=diff>0?'+'+diff:diff===0?'E':''+diff;
-  const played=state.scores.filter(s=>s!==null).length;
+  const diff    = tNet - tPar;
+  const diffStr = diff > 0 ? '+'+diff : diff === 0 ? 'E' : ''+diff;
+  const played  = state.scores.filter(s => s !== null).length;
 
-  const name = courseConfig.name || 'Scorecard';
-  document.getElementById('scTitle').textContent = name;
-  document.getElementById('scSub').textContent = played===n?'Partie terminée · '+n+' trous':played+' / '+n+' trous joués';
+  document.getElementById('scTitle').textContent = COURSE.name;
+  document.getElementById('scSub').textContent   =
+    played === n ? 'Partie terminée · ' + n + ' trous' : played + ' / ' + n + ' trous joués';
 
-  document.getElementById('summaryGrid').innerHTML=`
-    <div class="s-metric"><div class="sv">${tBrut||'—'}</div><div class="sl">Brut</div></div>
-    <div class="s-metric"><div class="sv">${tNet||'—'}</div><div class="sl">Net</div></div>
-    <div class="s-metric"><div class="sv ${tNet?(diff<0?'good':diff>0?'bad':''):''}">${tNet?diffStr:'—'}</div><div class="sl">vs par</div></div>
+  // Différentiel WHS (seulement si partie complète 18 trous)
+  let diffWhs = '';
+  if(allPlayed && n === 18){
+    const d = calcDifferentiel(tBrut, COURSE.slope, COURSE.courseRating);
+    diffWhs = `<div class="s-metric">
+      <div class="sv ${d < state.index ? 'good' : ''}">${d > 0 ? '+'+d : d}</div>
+      <div class="sl">Différentiel</div>
+    </div>`;
+  }
+
+  document.getElementById('summaryGrid').innerHTML = `
+    <div class="s-metric"><div class="sv">${tBrut || '—'}</div><div class="sl">Brut</div></div>
+    <div class="s-metric"><div class="sv">${tNet  || '—'}</div><div class="sl">Net</div></div>
+    <div class="s-metric"><div class="sv ${tNet ? (diff<0?'good':diff>0?'bad':'') : ''}">${tNet ? diffStr : '—'}</div><div class="sl">vs par</div></div>
     <div class="s-metric"><div class="sv ${tStb>36?'good':tStb>0&&tStb<28?'bad':''}">${tStb}</div><div class="sl">Stableford</div></div>
   `;
 
-  const headerRow=`<div class="sc-row header-row"><span>N°</span><span>Par</span><span>Idx</span><span>+</span><span>Brut</span><span>Net</span><span>Résultat</span></div>`;
-  let frontHtml='<div class="sc-section-label">Aller</div>'+headerRow;
-  let backHtml=n>9?'<div class="sc-section-label">Retour</div>'+headerRow:'';
-  let fHas=false,bHas=false;
+  // Index différentiel banner (18 trous complets seulement)
+  let diffBanner = '';
+  if(allPlayed && n === 18){
+    const d = calcDifferentiel(tBrut, COURSE.slope, COURSE.courseRating);
+    const better = d < state.index;
+    diffBanner = `<div class="diff-banner ${better?'diff-good':'diff-neutral'}">
+      <span class="diff-banner-label">Différentiel WHS</span>
+      <span class="diff-banner-val">${d > 0 ? '+'+d : d}</span>
+      <span class="diff-banner-sub">${better ? '▼ meilleur que votre index ('+state.index+')' : 'Index actuel : '+state.index}</span>
+    </div>`;
+  }
 
-  for(let i=0;i<n;i++){
-    const par=state.pars[i],hi=state.hcpIdxs[i];
-    const coups=getCoupsAlloues(state.playingHcp,hi);
-    const brut=state.scores[i];
-    const net=brut!==null?brut-coups:null;
-    const dc=getDiffClass(net,par),dl=getDiffLabel(net,par);
-    const row=`<div class="sc-row">
-      <span class="hole-n">${i+1}</span>
+  const headerRow = `<div class="sc-row header-row"><span>N°</span><span>Par</span><span>Idx</span><span>+</span><span>Brut</span><span>Net</span><span>Résultat</span></div>`;
+  const sectionLabel = state.nbHoles === 18 ? 'Aller' : (state.startHole === 0 ? 'Aller' : 'Retour');
+  let frontHtml = `<div class="sc-section-label">${sectionLabel}</div>` + headerRow;
+  let backHtml  = n > 9 ? '<div class="sc-section-label">Retour</div>' + headerRow : '';
+  let fHas = false, bHas = false;
+
+  for(let i = 0; i < n; i++){
+    const par   = state.pars[i];
+    const hi    = state.hcpIdxs[i];
+    const coups = getCoupsAlloues(state.playingHcp, hi);
+    const brut  = state.scores[i];
+    const net   = brut !== null ? brut - coups : null;
+    const dc    = getDiffClass(net, par), dl = getDiffLabel(net, par);
+    const hNum  = state.startHole + i + 1;
+    const row = `<div class="sc-row">
+      <span class="hole-n">${hNum}</span>
       <span class="cell">${par}</span><span class="cell">${hi}</span>
-      <span class="cell">${coups>0?'+'+coups:'0'}</span>
+      <span class="cell">${coups > 0 ? '+'+coups : '0'}</span>
       <span class="cell brut ${brut===null?'empty-score':''}">${brut!==null?brut:'—'}</span>
       <span class="cell ${net===null?'empty-score':''}">${net!==null?net:'—'}</span>
       <span><span class="diff-chip ${dc}">${dl||'—'}</span></span>
     </div>`;
-    if(i<mid){frontHtml+=row;if(brut!==null)fHas=true;}
-    else      {backHtml+=row; if(brut!==null)bHas=true;}
+    if(i < mid){ frontHtml += row; if(brut!==null) fHas=true; }
+    else        { backHtml  += row; if(brut!==null) bHas=true; }
   }
 
-  frontHtml+=`<div class="sc-subtotal"><span>Aller</span><span>${fPar}</span><span></span><span></span><span>${fHas?fBrut:'—'}</span><span>${fHas?fNet:'—'}</span><span></span></div>`;
-  if(n>9) backHtml+=`<div class="sc-subtotal"><span>Retour</span><span>${bPar}</span><span></span><span></span><span>${bHas?bBrut:'—'}</span><span>${bHas?bNet:'—'}</span><span></span></div>`;
+  const fHasAny = state.scores.slice(0,mid).some(s=>s!==null);
+  const bHasAny = state.scores.slice(mid).some(s=>s!==null);
+  frontHtml += `<div class="sc-subtotal"><span>${sectionLabel}</span><span>${fPar}</span><span></span><span></span><span>${fHasAny?fBrut:'—'}</span><span>${fHasAny?fNet:'—'}</span><span></span></div>`;
+  if(n > 9) backHtml += `<div class="sc-subtotal"><span>Retour</span><span>${bPar}</span><span></span><span></span><span>${bHasAny?bBrut:'—'}</span><span>${bHasAny?bNet:'—'}</span><span></span></div>`;
 
-  document.getElementById('scTable').innerHTML=frontHtml+backHtml;
+  document.getElementById('scTable').innerHTML = diffBanner + frontHtml + backHtml;
 }
 
 // ── Navigation
 function showScreen(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 function showPlay(){ showScreen('playScreen'); renderPlay(); }
 function showScorecard(){ renderScorecard(); showScreen('scorecardScreen'); }
 function resumeGame(){
-  const first=state.scores.findIndex(s=>s===null);
-  state.current=first>=0?first:state.nbHoles-1;
+  const first = state.scores.findIndex(s => s === null);
+  state.current = first >= 0 ? first : state.nbHoles - 1;
   showPlay();
 }
 
-// Init depuis COURSE
-(function initSetup(){
-  const lbl = document.getElementById('courseNameLabel');
-  if(lbl) lbl.textContent = COURSE.name + ' · Slope ' + COURSE.slope + ' · CR ' + COURSE.courseRating;
-})();
+// Init
 updateHcpPreview();
 </script>
 </body>
