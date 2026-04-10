@@ -4,156 +4,328 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Golf Score</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --g0: #0f1f0f;
-  --g1: #1a2e1a;
-  --g2: #243d24;
-  --g3: #3a6b3a;
-  --g4: #5a9c5a;
-  --gp: #b8d8b8;
-  --cream: #f2edd8;
-  --cream2: #e8e0c8;
-  --gold: #c9a84c;
-  --gold2: #e8c96a;
-  --white: #fdfcf8;
-  --eagle: #0d5c3a;
-  --eagle-bg: #d0f0e0;
-  --birdie: #1a3f6e;
-  --birdie-bg: #ccdaed;
-  --par-bg: #e8e2d4;
-  --bogey: #7a5200;
-  --bogey-bg: #f5e8c0;
-  --double: #7a2020;
-  --double-bg: #f5d0d0;
-  --worse: #5c1010;
-  --worse-bg: #edbbbb;
+  --green:      #2d6a2d;
+  --green-dark: #1e4d1e;
+  --green-mid:  #3a7a3a;
+  --green-soft: #e8f2e8;
+  --green-pale: #c8e0c8;
+  --bg:         #f4f0e6;
+  --bg2:        #ece7d8;
+  --surface:    #ffffff;
+  --gold:       #9a7020;
+  --gold-bg:    #faf0d8;
+  --gold-bdr:   #d4a830;
+  --ink:        #1a2e1a;
+  --ink2:       #3d4e3d;
+  --ink3:       #7a8a7a;
+  --eagle:      #0d5c3a; --eagle-bg: #d0f0e0;
+  --birdie:     #1a3f6e; --birdie-bg: #cce0f5;
+  --par-col:    #4a5a4a; --par-bg: #e8e2d0;
+  --bogey:      #7a5200; --bogey-bg: #fae8b0;
+  --double:     #7a2020; --double-bg: #f5cccc;
+  --worse:      #5c1010; --worse-bg: #f0aaaa;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-html, body { height: 100%; background: var(--g0); font-family: 'DM Sans', sans-serif; color: var(--white); overflow: hidden; }
+html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-serif; color: var(--ink); overflow: hidden; }
 
 .screen { display: none; height: 100dvh; flex-direction: column; }
 .screen.active { display: flex; }
 
-/* SETUP */
-#setupScreen { background: var(--g1); overflow-y: auto; }
-.setup-header { background: var(--g0); padding: 3rem 1.5rem 1.5rem; text-align: center; border-bottom: 1px solid rgba(201,168,76,0.3); }
-.setup-header .eyebrow { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.4rem; }
-.setup-header h1 { font-family: 'DM Serif Display', serif; font-size: 2.4rem; font-style: italic; color: var(--cream); line-height: 1; }
-.setup-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; flex: 1; }
-.field-group { display: flex; flex-direction: column; gap: 6px; }
-.field-group label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gp); opacity: 0.7; }
-.field-group input, .field-group select { background: rgba(255,255,255,0.06); border: 1px solid rgba(184,216,184,0.2); border-radius: 8px; color: var(--cream); font-family: 'DM Mono', monospace; font-size: 1.3rem; font-weight: 500; padding: 14px 16px; width: 100%; outline: none; -webkit-appearance: none; appearance: none; transition: border-color 0.2s; }
-.field-group input:focus, .field-group select:focus { border-color: var(--gold); background: rgba(255,255,255,0.09); }
-.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-.hcp-preview { background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.3); border-radius: 10px; padding: 1rem; display: flex; align-items: center; justify-content: space-between; }
-.hcp-preview .lbl { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); }
-.hcp-preview .val { font-family: 'DM Serif Display', serif; font-size: 2rem; font-style: italic; color: var(--gold2); }
-.hcp-preview .sublbl { font-size: 12px; color: var(--gold); opacity: 0.6; }
-.btn-start { background: var(--gold); color: var(--g0); border: none; border-radius: 12px; font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; padding: 18px; width: 100%; cursor: pointer; margin-top: auto; transition: background 0.15s, transform 0.1s; -webkit-appearance: none; }
-.btn-start:active { background: var(--gold2); transform: scale(0.98); }
+/* ── SHARED HEADER ── */
+.page-header {
+  background: var(--green-dark); padding: 2.8rem 1.25rem 1rem;
+  display: flex; align-items: center; gap: 12px;
+  border-bottom: 3px solid var(--gold-bdr); flex-shrink: 0;
+}
+.page-header h2 {
+  font-family: 'DM Serif Display', serif; font-size: 1.5rem;
+  font-style: italic; color: #f5f0e8; flex: 1;
+}
+.page-header .btn-back {
+  background: rgba(255,255,255,0.12); border: none; border-radius: 8px;
+  color: #f5f0e8; font-size: 18px; width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0;
+}
+.page-header .btn-back:active { background: rgba(255,255,255,0.22); }
 
-/* PLAY */
-#playScreen { background: var(--g1); }
-.top-bar { background: var(--g0); padding: 1rem 1.25rem 0.85rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.07); flex-shrink: 0; gap: 8px; }
-.top-bar .btn-icon { background: rgba(255,255,255,0.06); border: none; border-radius: 8px; color: var(--gp); font-size: 18px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: background 0.15s; }
-.top-bar .btn-icon:active { background: rgba(255,255,255,0.15); }
+/* ── SETUP ── */
+#setupScreen { background: var(--bg); overflow-y: auto; }
+.setup-header {
+  background: var(--green-dark); padding: 3rem 1.5rem 1.5rem;
+  text-align: center; border-bottom: 3px solid var(--gold-bdr);
+}
+.setup-header .eyebrow {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--green-pale); margin-bottom: 0.4rem;
+}
+.setup-header h1 {
+  font-family: 'DM Serif Display', serif; font-size: 2.4rem;
+  font-style: italic; color: #f5f0e8; line-height: 1;
+}
+.setup-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; flex: 1; }
+.field-group { display: flex; flex-direction: column; gap: 5px; }
+.field-group label {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink3);
+}
+.field-group input, .field-group select {
+  background: var(--surface); border: 1.5px solid #d8d0bc;
+  border-radius: 10px; color: var(--ink);
+  font-family: 'DM Mono', monospace; font-size: 1.3rem; font-weight: 500;
+  padding: 14px 16px; width: 100%; outline: none;
+  -webkit-appearance: none; appearance: none; transition: border-color 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.field-group input:focus, .field-group select:focus { border-color: var(--green-mid); }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.hcp-preview {
+  background: var(--gold-bg); border: 1.5px solid var(--gold-bdr);
+  border-radius: 12px; padding: 1rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.hcp-preview .lbl { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); }
+.hcp-preview .val { font-family: 'DM Serif Display', serif; font-size: 2.2rem; font-style: italic; color: var(--gold); }
+.hcp-preview .sublbl { font-size: 11px; color: var(--gold); opacity: 0.65; margin-top: 2px; }
+
+.btn-row { display: flex; gap: 10px; margin-top: auto; }
+.btn-start {
+  flex: 1; background: var(--green-dark); color: #f5f0e8; border: none;
+  border-radius: 12px; font-family: 'DM Mono', monospace;
+  font-size: 14px; font-weight: 500; letter-spacing: 0.1em;
+  text-transform: uppercase; padding: 18px;
+  cursor: pointer; transition: background 0.15s, transform 0.1s; -webkit-appearance: none;
+}
+.btn-start:active { background: var(--green-mid); transform: scale(0.98); }
+.btn-course-cfg {
+  background: var(--surface); color: var(--ink2);
+  border: 1.5px solid #d8d0bc; border-radius: 12px;
+  font-family: 'DM Mono', monospace; font-size: 13px;
+  padding: 18px 16px; cursor: pointer; white-space: nowrap;
+  -webkit-appearance: none; transition: background 0.15s;
+}
+.btn-course-cfg:active { background: var(--bg2); }
+
+/* ── COURSE CONFIG ── */
+#courseScreen { background: var(--bg); overflow-y: auto; }
+.course-body { padding: 1rem 1.25rem 2rem; }
+
+.course-name-row { margin-bottom: 1.25rem; }
+.course-name-row input {
+  background: var(--surface); border: 1.5px solid #d8d0bc;
+  border-radius: 10px; color: var(--ink);
+  font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 500;
+  padding: 12px 16px; width: 100%; outline: none; -webkit-appearance: none;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06); transition: border-color 0.2s;
+}
+.course-name-row input:focus { border-color: var(--green-mid); }
+.course-name-row label {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--ink3); display: block; margin-bottom: 5px;
+}
+
+.holes-grid {
+  display: grid; gap: 8px;
+}
+.hole-cfg-row {
+  background: var(--surface); border-radius: 10px;
+  border: 1px solid #ddd8cc;
+  display: grid; grid-template-columns: 36px 1fr 1fr;
+  align-items: center; gap: 0;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.hole-cfg-num {
+  font-family: 'DM Serif Display', serif; font-size: 1.2rem;
+  font-style: italic; color: var(--ink3);
+  text-align: center; padding: 0 4px;
+  border-right: 1px solid #eee8dc;
+  align-self: stretch; display: flex; align-items: center; justify-content: center;
+  background: #faf8f2;
+}
+.hole-cfg-field {
+  display: flex; flex-direction: column; padding: 8px 12px;
+  border-right: 1px solid #eee8dc;
+}
+.hole-cfg-field:last-child { border-right: none; }
+.hole-cfg-field span {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink3); margin-bottom: 3px;
+}
+.hole-cfg-field input {
+  background: transparent; border: none; outline: none;
+  font-family: 'DM Mono', monospace; font-size: 1.2rem; font-weight: 500;
+  color: var(--ink); width: 100%; padding: 0;
+  -webkit-appearance: none; appearance: none;
+}
+
+.section-sep {
+  height: 1px; background: var(--green-pale); margin: 12px 0 10px;
+}
+.section-label-sm {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--green); margin-bottom: 8px;
+}
+
+.btn-save-course {
+  width: 100%; background: var(--green-dark); color: #f5f0e8; border: none;
+  border-radius: 12px; font-family: 'DM Mono', monospace;
+  font-size: 14px; font-weight: 500; letter-spacing: 0.1em;
+  text-transform: uppercase; padding: 18px; margin-top: 1.25rem;
+  cursor: pointer; -webkit-appearance: none; transition: background 0.15s;
+}
+.btn-save-course:active { background: var(--green-mid); }
+
+/* ── PLAY ── */
+#playScreen { background: var(--bg); }
+.top-bar {
+  background: var(--surface); padding: 1rem 1.25rem 0.85rem;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid #ddd8cc; flex-shrink: 0; gap: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+}
+.top-bar .btn-icon {
+  background: var(--green-soft); border: none; border-radius: 8px;
+  color: var(--green-dark); font-size: 18px; width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0; transition: background 0.15s;
+}
+.top-bar .btn-icon:active { background: var(--green-pale); }
 .top-center { flex: 1; text-align: center; }
-.top-center .hole-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gp); opacity: 0.6; }
-.top-center .hole-num { font-family: 'DM Serif Display', serif; font-size: 1.8rem; font-style: italic; color: var(--cream); line-height: 1; }
-.hole-dots { display: flex; align-items: center; justify-content: center; gap: 5px; padding: 10px 1.25rem; background: var(--g0); flex-shrink: 0; flex-wrap: wrap; }
-.dot { width: 22px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.1); cursor: pointer; transition: background 0.2s; flex-shrink: 0; }
-.dot.played { background: var(--g4); }
-.dot.current { background: var(--gold); }
-.hole-card { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.5rem; gap: 1.25rem; overflow: hidden; }
-.hole-info-row { display: flex; gap: 12px; align-items: stretch; width: 100%; }
-.info-pill { background: rgba(255,255,255,0.06); border-radius: 10px; padding: 12px 16px; text-align: center; flex: 1; }
-.info-pill .p-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gp); opacity: 0.6; margin-bottom: 4px; }
-.info-pill .p-val { font-family: 'DM Serif Display', serif; font-size: 1.6rem; font-style: italic; color: var(--cream); line-height: 1; }
-.info-pill.gold-pill { background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.3); }
-.info-pill.gold-pill .p-label { color: var(--gold); opacity: 1; }
-.info-pill.gold-pill .p-val { color: var(--gold2); }
+.top-center .hole-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink3); }
+.top-center .hole-num { font-family: 'DM Serif Display', serif; font-size: 1.8rem; font-style: italic; color: var(--ink); line-height: 1; }
+.hole-dots {
+  display: flex; align-items: center; justify-content: center;
+  gap: 5px; padding: 10px 1.25rem;
+  background: var(--surface); flex-shrink: 0; flex-wrap: wrap;
+  border-bottom: 1px solid #e8e2d4;
+}
+.dot { width: 22px; height: 6px; border-radius: 3px; background: #ddd8cc; cursor: pointer; transition: background 0.2s; flex-shrink: 0; }
+.dot.played { background: var(--green-mid); }
+.dot.current { background: var(--gold-bdr); }
+.hole-card {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 1.5rem; gap: 1.25rem; overflow: hidden;
+}
+.hole-info-row { display: flex; gap: 10px; align-items: stretch; width: 100%; }
+.info-pill {
+  background: var(--surface); border: 1px solid #ddd8cc;
+  border-radius: 12px; padding: 12px 16px; text-align: center; flex: 1;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.info-pill .p-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink3); margin-bottom: 4px; }
+.info-pill .p-val { font-family: 'DM Serif Display', serif; font-size: 1.6rem; font-style: italic; color: var(--ink); line-height: 1; }
+.info-pill.gold-pill { background: var(--gold-bg); border-color: var(--gold-bdr); }
+.info-pill.gold-pill .p-label { color: var(--gold); }
+.info-pill.gold-pill .p-val   { color: var(--gold); }
 .score-control { display: flex; align-items: center; justify-content: center; gap: 20px; width: 100%; }
-.btn-score { width: 84px; height: 84px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.08s, opacity 0.1s; -webkit-appearance: none; flex-shrink: 0; }
+.btn-score {
+  width: 88px; height: 88px; border-radius: 50%; border: none;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: transform 0.08s; -webkit-appearance: none; flex-shrink: 0;
+  font-size: 2.4rem; font-weight: 300;
+}
 .btn-score:active { transform: scale(0.90); }
-.btn-minus { background: rgba(255,255,255,0.09); color: var(--cream); font-size: 2.2rem; font-weight: 300; }
-.btn-plus  { background: var(--gold); color: var(--g0); font-size: 2.2rem; font-weight: 300; }
+.btn-minus { background: var(--bg2); color: var(--ink2); box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+.btn-plus  { background: var(--green-dark); color: #f5f0e8; box-shadow: 0 2px 8px rgba(30,77,30,0.35); }
 .score-display { text-align: center; min-width: 100px; }
 .score-big { font-family: 'DM Serif Display', serif; font-size: 5.5rem; font-style: italic; line-height: 1; transition: color 0.2s; }
-.score-big.eagle  { color: #6fdfa8; }
-.score-big.birdie { color: #80b4e8; }
-.score-big.par    { color: var(--cream); }
-.score-big.bogey  { color: #f0c060; }
-.score-big.double { color: #f08080; }
-.score-big.worse  { color: #e05050; }
-.score-big.empty  { color: rgba(255,255,255,0.2); }
+.score-big.eagle  { color: var(--eagle); }
+.score-big.birdie { color: var(--birdie); }
+.score-big.par    { color: var(--ink); }
+.score-big.bogey  { color: var(--bogey); }
+.score-big.double { color: var(--double); }
+.score-big.worse  { color: var(--worse); }
+.score-big.empty  { color: #c8c0b0; }
 .score-label { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 4px; height: 16px; }
-.score-label.eagle  { color: #6fdfa8; }
-.score-label.birdie { color: #80b4e8; }
-.score-label.par    { color: var(--gp); opacity: 0.7; }
-.score-label.bogey  { color: #f0c060; }
-.score-label.double { color: #f08080; }
-.score-label.worse  { color: #e05050; }
+.score-label.eagle  { color: var(--eagle); }
+.score-label.birdie { color: var(--birdie); }
+.score-label.par    { color: var(--ink3); }
+.score-label.bogey  { color: var(--bogey); }
+.score-label.double { color: var(--double); }
+.score-label.worse  { color: var(--worse); }
 .score-label.empty  { color: transparent; }
 .net-row { display: flex; gap: 10px; width: 100%; }
-.net-badge { flex: 1; background: rgba(255,255,255,0.05); border-radius: 10px; padding: 10px; text-align: center; }
-.net-badge .nb-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gp); opacity: 0.5; margin-bottom: 3px; }
-.net-badge .nb-val { font-family: 'DM Mono', monospace; font-size: 1.1rem; font-weight: 500; color: var(--cream); }
+.net-badge {
+  flex: 1; background: var(--surface); border: 1px solid #ddd8cc;
+  border-radius: 10px; padding: 10px; text-align: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.net-badge .nb-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink3); margin-bottom: 3px; }
+.net-badge .nb-val { font-family: 'DM Mono', monospace; font-size: 1.1rem; font-weight: 500; color: var(--ink); }
 .nav-row { display: flex; gap: 10px; padding: 0 1.5rem 1.5rem; flex-shrink: 0; }
-.btn-nav { flex: 1; padding: 18px; border-radius: 10px; border: none; font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: background 0.15s, transform 0.08s; -webkit-appearance: none; }
+.btn-nav {
+  flex: 1; padding: 18px; border-radius: 10px; border: none;
+  font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500;
+  letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer;
+  transition: background 0.15s, transform 0.08s; -webkit-appearance: none;
+}
 .btn-nav:active { transform: scale(0.97); }
-.btn-prev { background: rgba(255,255,255,0.07); color: var(--gp); }
-.btn-next { background: var(--g3); color: var(--cream); }
-.btn-next.finish { background: var(--gold); color: var(--g0); }
+.btn-prev { background: var(--bg2); color: var(--ink2); border: 1px solid #ccc8bc; }
+.btn-next { background: var(--green-mid); color: #f5f0e8; }
+.btn-next.finish { background: var(--gold-bdr); color: var(--ink); }
 
-/* SCORECARD */
-#scorecardScreen { background: var(--g1); overflow-y: auto; }
-.sc-header { background: var(--g0); padding: 2rem 1.25rem 1.25rem; text-align: center; border-bottom: 1px solid rgba(201,168,76,0.3); position: sticky; top: 0; z-index: 10; }
-.sc-header h2 { font-family: 'DM Serif Display', serif; font-size: 1.6rem; font-style: italic; color: var(--cream); }
+/* ── SCORECARD ── */
+#scorecardScreen { background: var(--bg); overflow-y: auto; }
+.sc-header {
+  background: var(--surface); padding: 2rem 1.25rem 1.25rem;
+  text-align: center; border-bottom: 2px solid var(--gold-bdr);
+  position: sticky; top: 0; z-index: 10;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+}
+.sc-header h2 { font-family: 'DM Serif Display', serif; font-size: 1.6rem; font-style: italic; color: var(--ink); }
 .sc-header .sc-sub { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin-top: 2px; }
-.summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid rgba(255,255,255,0.07); }
-.s-metric { padding: 1.25rem 0.5rem; text-align: center; border-right: 1px solid rgba(255,255,255,0.07); }
+.summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid #ddd8cc; background: var(--surface); }
+.s-metric { padding: 1.25rem 0.5rem; text-align: center; border-right: 1px solid #ddd8cc; }
 .s-metric:last-child { border-right: none; }
-.s-metric .sv { font-family: 'DM Serif Display', serif; font-size: 1.8rem; font-style: italic; color: var(--cream); line-height: 1; }
-.s-metric .sv.good { color: #6fdfa8; }
-.s-metric .sv.bad  { color: #f08080; }
-.s-metric .sl { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gp); opacity: 0.5; margin-top: 4px; }
+.s-metric .sv { font-family: 'DM Serif Display', serif; font-size: 1.8rem; font-style: italic; color: var(--ink); line-height: 1; }
+.s-metric .sv.good { color: var(--eagle); }
+.s-metric .sv.bad  { color: var(--double); }
+.s-metric .sl { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink3); margin-top: 4px; }
 .sc-table { padding: 0 0 2rem; }
-.sc-section-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); padding: 1rem 1.25rem 0.5rem; opacity: 0.8; }
-.sc-row { display: grid; grid-template-columns: 32px 30px 30px 36px 40px 40px 1fr; align-items: center; padding: 9px 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; }
-.sc-row.header-row { background: rgba(255,255,255,0.04); font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gp); opacity: 0.6; padding-top: 6px; padding-bottom: 6px; }
+.sc-section-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); padding: 1rem 1.25rem 0.5rem; }
+.sc-row { display: grid; grid-template-columns: 32px 30px 30px 36px 40px 40px 1fr; align-items: center; padding: 9px 1.25rem; border-bottom: 1px solid #ece7d8; font-size: 13px; background: var(--surface); }
+.sc-row:nth-child(even) { background: #faf8f2; }
+.sc-row.header-row { background: var(--green-soft); font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--green-dark); padding-top: 6px; padding-bottom: 6px; }
 .sc-row > * { text-align: center; }
 .sc-row > *:first-child { text-align: left; }
-.sc-row .hole-n { font-family: 'DM Serif Display', serif; font-size: 1.1rem; font-style: italic; color: var(--cream); }
-.sc-row .cell { color: var(--gp); opacity: 0.7; font-family: 'DM Mono', monospace; }
-.sc-row .cell.brut { font-weight: 500; color: var(--cream); opacity: 1; }
-.sc-row .cell.empty-score { color: rgba(255,255,255,0.2); opacity: 1; }
+.sc-row .hole-n { font-family: 'DM Serif Display', serif; font-size: 1.1rem; font-style: italic; color: var(--ink); }
+.sc-row .cell { color: var(--ink2); font-family: 'DM Mono', monospace; }
+.sc-row .cell.brut { font-weight: 500; color: var(--ink); }
+.sc-row .cell.empty-score { color: #c0bab0; }
 .diff-chip { display: inline-block; padding: 2px 8px; border-radius: 4px; font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500; text-align: center; }
 .diff-chip.eagle  { background: var(--eagle-bg);  color: var(--eagle); }
 .diff-chip.birdie { background: var(--birdie-bg); color: var(--birdie); }
-.diff-chip.par    { background: var(--par-bg);    color: #555; }
+.diff-chip.par    { background: var(--par-bg);    color: var(--par-col); }
 .diff-chip.bogey  { background: var(--bogey-bg);  color: var(--bogey); }
 .diff-chip.double { background: var(--double-bg); color: var(--double); }
 .diff-chip.worse  { background: var(--worse-bg);  color: var(--worse); }
 .diff-chip.empty  { background: transparent; color: transparent; }
-.sc-subtotal { display: grid; grid-template-columns: 32px 30px 30px 36px 40px 40px 1fr; padding: 8px 1.25rem; background: rgba(201,168,76,0.08); border-top: 1px solid rgba(201,168,76,0.2); border-bottom: 1px solid rgba(201,168,76,0.2); }
-.sc-subtotal > * { text-align: center; font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500; color: var(--cream); }
-.sc-subtotal > *:first-child { text-align: left; color: var(--gold); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+.sc-subtotal { display: grid; grid-template-columns: 32px 30px 30px 36px 40px 40px 1fr; padding: 8px 1.25rem; background: var(--green-soft); border-top: 1px solid var(--green-pale); border-bottom: 1px solid var(--green-pale); }
+.sc-subtotal > * { text-align: center; font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500; color: var(--ink2); }
+.sc-subtotal > *:first-child { text-align: left; color: var(--green-dark); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
 .sc-footer { padding: 1.25rem; display: flex; gap: 10px; flex-shrink: 0; }
-.btn-resume { flex: 1; padding: 16px; border-radius: 10px; border: none; background: var(--g3); color: var(--cream); font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; -webkit-appearance: none; transition: background 0.15s; }
-.btn-resume:active { background: var(--g4); }
-.btn-restart { padding: 16px 20px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: var(--gp); font-family: 'DM Mono', monospace; font-size: 13px; cursor: pointer; -webkit-appearance: none; }
-.btn-restart:active { background: rgba(255,255,255,0.08); }
+.btn-resume { flex: 1; padding: 16px; border-radius: 10px; border: none; background: var(--green-dark); color: #f5f0e8; font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; -webkit-appearance: none; transition: background 0.15s; }
+.btn-resume:active { background: var(--green-mid); }
+.btn-restart { padding: 16px 20px; border-radius: 10px; border: 1.5px solid #ccc8bc; background: var(--surface); color: var(--ink2); font-family: 'DM Mono', monospace; font-size: 13px; cursor: pointer; -webkit-appearance: none; }
+.btn-restart:active { background: var(--bg2); }
+
 @keyframes pop { 0%{transform:scale(0.85);opacity:0} 60%{transform:scale(1.06)} 100%{transform:scale(1);opacity:1} }
 .pop { animation: pop 0.2s ease both; }
 </style>
 </head>
 <body>
 
-<!-- SETUP -->
+<!-- ══ SETUP ══ -->
 <div id="setupScreen" class="screen active">
   <div class="setup-header">
     <p class="eyebrow">Golf Score</p>
@@ -181,7 +353,7 @@ html, body { height: 100%; background: var(--g0); font-family: 'DM Sans', sans-s
       </div>
       <div class="field-group">
         <label>Nb de trous</label>
-        <select id="sHoles">
+        <select id="sHoles" onchange="onNbHolesChange()">
           <option value="18">18 trous</option>
           <option value="9">9 trous</option>
         </select>
@@ -194,11 +366,34 @@ html, body { height: 100%; background: var(--g0); font-family: 'DM Sans', sans-s
       </div>
       <div class="val" id="hcpPreview">54</div>
     </div>
-    <button class="btn-start" onclick="startGame()">Commencer ▶</button>
+    <div class="btn-row">
+      <button class="btn-course-cfg" onclick="showCourse()">⛳ Parcours</button>
+      <button class="btn-start" onclick="startGame()">Jouer ▶</button>
+    </div>
   </div>
 </div>
 
-<!-- PLAY -->
+<!-- ══ COURSE CONFIG ══ -->
+<div id="courseScreen" class="screen">
+  <div class="page-header">
+    <button class="btn-back" onclick="showScreen('setupScreen')">←</button>
+    <h2>Configurer le parcours</h2>
+  </div>
+  <div class="course-body" style="overflow-y:auto;flex:1;">
+    <div class="course-name-row" style="margin-top:1rem;">
+      <label>Nom du parcours</label>
+      <input type="text" id="courseName" placeholder="Ex : Golf de Saint-Denis" maxlength="40">
+    </div>
+    <div class="section-label-sm">Aller — trous 1 à 9</div>
+    <div class="holes-grid" id="holesGridFront"></div>
+    <div class="section-sep"></div>
+    <div class="section-label-sm" id="backLabel">Retour — trous 10 à 18</div>
+    <div class="holes-grid" id="holesGridBack"></div>
+    <button class="btn-save-course" onclick="saveCourse()">Enregistrer ✓</button>
+  </div>
+</div>
+
+<!-- ══ PLAY ══ -->
 <div id="playScreen" class="screen">
   <div class="top-bar">
     <button class="btn-icon" onclick="showScorecard()">☰</button>
@@ -227,10 +422,10 @@ html, body { height: 100%; background: var(--g0); font-family: 'DM Sans', sans-s
   </div>
 </div>
 
-<!-- SCORECARD -->
+<!-- ══ SCORECARD ══ -->
 <div id="scorecardScreen" class="screen">
   <div class="sc-header">
-    <h2>Scorecard</h2>
+    <h2 id="scTitle">Scorecard</h2>
     <div class="sc-sub" id="scSub">Partie en cours</div>
   </div>
   <div class="summary-grid" id="summaryGrid"></div>
@@ -242,15 +437,98 @@ html, body { height: 100%; background: var(--g0); font-family: 'DM Sans', sans-s
 </div>
 
 <script>
-const DEFAULT_PAR_18 = [4,4,3,5,4,3,4,5,4,4,3,5,4,4,3,5,4,4];
-const DEFAULT_HCP_18 = [7,11,15,1,9,17,5,13,3,8,16,2,12,6,18,4,14,10];
-const DEFAULT_PAR_9  = [4,4,3,5,4,3,4,5,4];
-const DEFAULT_HCP_9  = [7,2,8,1,5,9,3,6,4];
+// ╔══════════════════════════════════════════════════════════════╗
+// ║              CONFIGURATION DU PARCOURS                      ║
+// ║  Modifie ces données pour correspondre à ton club.          ║
+// ║  Chaque tableau a 18 valeurs (une par trou, dans l'ordre).  ║
+// ╚══════════════════════════════════════════════════════════════╝
 
-let state = { index:54, slope:113, cr:72, coursePar:72, nbHoles:18, playingHcp:54, pars:[], hcpIdxs:[], scores:[], current:0 };
+const COURSE = {
 
+  // Nom affiché sur la scorecard
+  name: "Mon Golf",
+
+  // Slope et Course Rating (indiqués sur la carte de score du club)
+  slope: 113,
+  courseRating: 73,0,
+
+  // ── 18 TROUS ──────────────────────────────────────────────────
+  //             T1  T2  T3  T4  T5  T6  T7  T8  T9  T10 T11 T12 T13 T14 T15 T16 T17 T18
+  par18:       [  4,  5,  4,  4,  3,  5,  3,  4,  4,   4,  4,  3,  5,  3,  4,  5,  4,  4 ],
+  handicap18:  [  18, 17, 10,  15,  12, 11,  16, 3,  1,   9, 7,  13, 8,  14, 6,  5, 4, 2 ],
+  //  ^ index de difficulté du trou (1 = plus difficile, 18 = plus facile)
+
+  // ── 9 TROUS (si tu joues en 9 trous) ──────────────────────────
+  //             T1  T2  T3  T4  T5  T6  T7  T8  T9
+  par9:        [  4,  5,  4,  4,  3,  5,  3,  4,  4 ],
+  handicap9:   [  18, 17, 10,  15,  12, 11,  16, 3 ],
+
+};
+
+// ── Defaults (fallback interne — ne pas modifier)
+const D_PAR_18 = COURSE.par18;
+const D_HCP_18 = COURSE.handicap18;
+const D_PAR_9  = COURSE.par9;
+const D_HCP_9  = COURSE.handicap9;
+
+// ── Course config (persisted in localStorage)
+function loadCourseConfig(){
+  try {
+    const saved = localStorage.getItem('golf_course');
+    if(saved){
+      const p = JSON.parse(saved);
+      if(Array.isArray(p.pars18) && p.pars18.length===18 &&
+         Array.isArray(p.hcpIdxs18) && p.hcpIdxs18.length===18 &&
+         Array.isArray(p.pars9) && p.pars9.length===9 &&
+         Array.isArray(p.hcpIdxs9) && p.hcpIdxs9.length===9){
+        return p;
+      }
+    }
+  } catch(e){}
+  // Aucune sauvegarde → on utilise le bloc COURSE défini en haut
+  return {
+    name:      COURSE.name,
+    slope:     COURSE.slope,
+    cr:        COURSE.courseRating,
+    pars18:    [...COURSE.par18],
+    hcpIdxs18: [...COURSE.handicap18],
+    pars9:     [...COURSE.par9],
+    hcpIdxs9:  [...COURSE.handicap9],
+  };
+}
+function saveCourseToStorage(){
+  try { localStorage.setItem('golf_course', JSON.stringify(courseConfig)); } catch(e){}
+}
+let courseConfig = loadCourseConfig();
+
+// ── Game state
+let state = {
+  index:54, slope:113, cr:72, coursePar:72,
+  nbHoles:18, playingHcp:54,
+  pars:[], hcpIdxs:[], scores:[], current:0
+};
+
+// ── Helpers
 function calcHcp(idx,slope,cr,par){ return Math.round(idx*(slope/113)+(cr-par)); }
+function getCoupsAlloues(hcp,hi){ return Math.floor(hcp/18)+(hi<=(hcp%18)?1:0); }
+function stbNet(net,par){ return net===null?null:Math.max(0,par-net+2); }
+function getDiffClass(net,par){
+  if(net===null) return 'empty';
+  const d=net-par;
+  if(d<=-2) return 'eagle'; if(d===-1) return 'birdie';
+  if(d===0) return 'par';   if(d===1)  return 'bogey';
+  if(d===2) return 'double'; return 'worse';
+}
+function getDiffLabel(net,par){
+  if(net===null) return '';
+  const d=net-par;
+  if(d<=-2) return d===-2?'Eagle':'Albatros';
+  if(d===-1) return 'Birdie'; if(d===0) return 'Par';
+  if(d===1)  return 'Bogey';  if(d===2) return '+2';
+  return '+'+d;
+}
 
+// ── Setup screen
 function updateHcpPreview(){
   const idx=parseFloat(document.getElementById('sIndex').value)||0;
   const slope=parseFloat(document.getElementById('sSlope').value)||113;
@@ -260,49 +538,100 @@ function updateHcpPreview(){
 }
 ['sIndex','sSlope','sCR','sPar'].forEach(id=>document.getElementById(id).addEventListener('input',updateHcpPreview));
 
+function onNbHolesChange(){
+  const n=parseInt(document.getElementById('sHoles').value)||18;
+  // update par field to match course config
+  const total=(n===9?courseConfig.pars9:courseConfig.pars18).reduce((a,b)=>a+b,0);
+  document.getElementById('sPar').value=total;
+  updateHcpPreview();
+}
+
 function startGame(){
-  state.index=parseFloat(document.getElementById('sIndex').value)||0;
-  state.slope=parseFloat(document.getElementById('sSlope').value)||113;
-  state.cr=parseFloat(document.getElementById('sCR').value)||72;
-  state.coursePar=parseFloat(document.getElementById('sPar').value)||72;
-  state.nbHoles=parseInt(document.getElementById('sHoles').value)||18;
-  state.playingHcp=calcHcp(state.index,state.slope,state.cr,state.coursePar);
-  state.pars=state.nbHoles===9?[...DEFAULT_PAR_9]:[...DEFAULT_PAR_18];
-  state.hcpIdxs=state.nbHoles===9?[...DEFAULT_HCP_9]:[...DEFAULT_HCP_18];
-  state.scores=new Array(state.nbHoles).fill(null);
-  state.current=0;
+  state.index    = parseFloat(document.getElementById('sIndex').value)||0;
+  state.slope    = parseFloat(document.getElementById('sSlope').value)||113;
+  state.cr       = parseFloat(document.getElementById('sCR').value)||72;
+  state.coursePar= parseFloat(document.getElementById('sPar').value)||72;
+  state.nbHoles  = parseInt(document.getElementById('sHoles').value)||18;
+  state.playingHcp = calcHcp(state.index,state.slope,state.cr,state.coursePar);
+  state.pars    = state.nbHoles===9 ? [...courseConfig.pars9]    : [...courseConfig.pars18];
+  state.hcpIdxs = state.nbHoles===9 ? [...courseConfig.hcpIdxs9] : [...courseConfig.hcpIdxs18];
+  state.scores  = new Array(state.nbHoles).fill(null);
+  state.current = 0;
   showPlay();
 }
 function goSetup(){ showScreen('setupScreen'); }
 
-function getCoupsAlloues(hcp,hi){ return Math.floor(hcp/18)+(hi<=(hcp%18)?1:0); }
-function stbNet(net,par){ return net===null?null:Math.max(0,par-net+2); }
-
-function getDiffClass(net,par){
-  if(net===null) return 'empty';
-  const d=net-par;
-  if(d<=-2) return 'eagle';
-  if(d===-1) return 'birdie';
-  if(d===0)  return 'par';
-  if(d===1)  return 'bogey';
-  if(d===2)  return 'double';
-  return 'worse';
-}
-function getDiffLabel(net,par){
-  if(net===null) return '';
-  const d=net-par;
-  if(d<=-2) return d===-2?'Eagle':'Albatros';
-  if(d===-1) return 'Birdie';
-  if(d===0)  return 'Par';
-  if(d===1)  return 'Bogey';
-  if(d===2)  return '+2';
-  return '+'+d;
+// ── Course config screen
+function showCourse(){
+  const n = parseInt(document.getElementById('sHoles').value)||18;
+  buildCourseGrid(n);
+  document.getElementById('courseName').value = courseConfig.name;
+  showScreen('courseScreen');
 }
 
+function buildCourseGrid(n){
+  const frontEl = document.getElementById('holesGridFront');
+  const backEl  = document.getElementById('holesGridBack');
+  const backLbl = document.getElementById('backLabel');
+  const pars    = n===9 ? courseConfig.pars9    : courseConfig.pars18;
+  const hcps    = n===9 ? courseConfig.hcpIdxs9 : courseConfig.hcpIdxs18;
+
+  frontEl.innerHTML = '';
+  backEl.innerHTML  = '';
+  backLbl.style.display = n===9 ? 'none' : '';
+  backEl.style.display  = n===9 ? 'none' : '';
+
+  for(let i=0;i<n;i++){
+    const row = document.createElement('div');
+    row.className = 'hole-cfg-row';
+    row.innerHTML = `
+      <div class="hole-cfg-num">${i+1}</div>
+      <div class="hole-cfg-field">
+        <span>Par</span>
+        <input type="number" inputmode="numeric" min="3" max="6" value="${pars[i]}" data-i="${i}" data-t="par">
+      </div>
+      <div class="hole-cfg-field">
+        <span>Handicap</span>
+        <input type="number" inputmode="numeric" min="1" max="${n}" value="${hcps[i]}" data-i="${i}" data-t="hcp">
+      </div>
+    `;
+    if(i<9) frontEl.appendChild(row);
+    else    backEl.appendChild(row);
+  }
+}
+
+function saveCourse(){
+  const n = parseInt(document.getElementById('sHoles').value)||18;
+  courseConfig.name  = document.getElementById('courseName').value.trim();
+  courseConfig.slope = parseFloat(document.getElementById('sSlope').value)||113;
+  courseConfig.cr    = parseFloat(document.getElementById('sCR').value)||72;
+
+  const parKey = n===9 ? 'pars9'    : 'pars18';
+  const hcpKey = n===9 ? 'hcpIdxs9' : 'hcpIdxs18';
+
+  document.querySelectorAll('#holesGridFront input, #holesGridBack input').forEach(inp=>{
+    const i   = parseInt(inp.dataset.i);
+    const val = parseInt(inp.value);
+    if(isNaN(val)) return;
+    if(inp.dataset.t==='par') courseConfig[parKey][i] = Math.min(6,Math.max(3,val));
+    else                       courseConfig[hcpKey][i] = Math.min(n,Math.max(1,val));
+  });
+
+  // update par total in setup
+  const total = courseConfig[parKey].reduce((a,b)=>a+b,0);
+  document.getElementById('sPar').value = total;
+  updateHcpPreview();
+
+  // persist to localStorage
+  saveCourseToStorage();
+  showScreen('setupScreen');
+}
+
+// ── Score logic
 function adjustScore(delta){
   const i=state.current, par=state.pars[i];
   const cur=state.scores[i];
-  if(cur===null){ state.scores[i]=delta>0?0:0; }
+  if(cur===null){ state.scores[i]=0; }
   else {
     const next=cur+delta;
     if(next<0||next>par+8) return;
@@ -310,7 +639,6 @@ function adjustScore(delta){
   }
   renderPlay();
 }
-
 function navigate(dir){
   const next=state.current+dir;
   if(next<0) return;
@@ -319,6 +647,7 @@ function navigate(dir){
   renderPlay();
 }
 
+// ── Render play
 function renderPlay(){
   const i=state.current, par=state.pars[i], hi=state.hcpIdxs[i];
   const coups=getCoupsAlloues(state.playingHcp,hi);
@@ -359,13 +688,13 @@ function renderPlay(){
 
   const btnPrev=document.getElementById('btnPrev');
   const btnNext=document.getElementById('btnNext');
-  btnPrev.disabled=i===0;
-  btnPrev.style.opacity=i===0?'0.3':'1';
+  btnPrev.disabled=i===0; btnPrev.style.opacity=i===0?'0.3':'1';
   const isLast=i===state.nbHoles-1;
   btnNext.textContent=isLast?'Voir score ▶':'Suiv. →';
   btnNext.className='btn-nav btn-next'+(isLast?' finish':'');
 }
 
+// ── Render scorecard
 function renderScorecard(){
   const n=state.nbHoles, mid=n===18?9:n;
   let tBrut=0,tNet=0,tPar=0,tStb=0;
@@ -388,7 +717,10 @@ function renderScorecard(){
   const diff=tNet-tPar;
   const diffStr=diff>0?'+'+diff:diff===0?'E':''+diff;
   const played=state.scores.filter(s=>s!==null).length;
-  document.getElementById('scSub').textContent=played===n?'Partie terminée · '+n+' trous':played+' / '+n+' trous joués';
+
+  const name = courseConfig.name || 'Scorecard';
+  document.getElementById('scTitle').textContent = name;
+  document.getElementById('scSub').textContent = played===n?'Partie terminée · '+n+' trous':played+' / '+n+' trous joués';
 
   document.getElementById('summaryGrid').innerHTML=`
     <div class="s-metric"><div class="sv">${tBrut||'—'}</div><div class="sl">Brut</div></div>
@@ -410,15 +742,14 @@ function renderScorecard(){
     const dc=getDiffClass(net,par),dl=getDiffLabel(net,par);
     const row=`<div class="sc-row">
       <span class="hole-n">${i+1}</span>
-      <span class="cell">${par}</span>
-      <span class="cell">${hi}</span>
+      <span class="cell">${par}</span><span class="cell">${hi}</span>
       <span class="cell">${coups>0?'+'+coups:'0'}</span>
       <span class="cell brut ${brut===null?'empty-score':''}">${brut!==null?brut:'—'}</span>
       <span class="cell ${net===null?'empty-score':''}">${net!==null?net:'—'}</span>
       <span><span class="diff-chip ${dc}">${dl||'—'}</span></span>
     </div>`;
     if(i<mid){frontHtml+=row;if(brut!==null)fHas=true;}
-    else      {backHtml+=row;if(brut!==null)bHas=true;}
+    else      {backHtml+=row; if(brut!==null)bHas=true;}
   }
 
   frontHtml+=`<div class="sc-subtotal"><span>Aller</span><span>${fPar}</span><span></span><span></span><span>${fHas?fBrut:'—'}</span><span>${fHas?fNet:'—'}</span><span></span></div>`;
@@ -427,6 +758,7 @@ function renderScorecard(){
   document.getElementById('scTable').innerHTML=frontHtml+backHtml;
 }
 
+// ── Navigation
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -439,6 +771,13 @@ function resumeGame(){
   showPlay();
 }
 
+// Pré-remplir setup depuis courseConfig (COURSE ou localStorage)
+(function initSetup(){
+  if(courseConfig.slope) document.getElementById('sSlope').value = courseConfig.slope;
+  if(courseConfig.cr)    document.getElementById('sCR').value    = courseConfig.cr;
+  const total = courseConfig.pars18.reduce((a,b)=>a+b,0);
+  document.getElementById('sPar').value = total;
+})();
 updateHcpPreview();
 </script>
 </body>
