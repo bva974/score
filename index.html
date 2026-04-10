@@ -312,6 +312,45 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
 .btn-restart { padding: 16px 20px; border-radius: 10px; border: 1.5px solid #ccc8bc; background: var(--surface); color: var(--ink2); font-family: 'DM Mono', monospace; font-size: 13px; cursor: pointer; -webkit-appearance: none; }
 .btn-restart:active { background: var(--bg2); }
 
+.gps-bar {
+  width: 100%; display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; padding: 8px 1.5rem; flex-shrink: 0;
+  background: var(--surface); border-bottom: 1px solid #e8e2d4;
+}
+.gps-dist {
+  font-family: 'DM Serif Display', serif; font-size: 1.5rem;
+  font-style: italic; color: var(--green-dark); line-height: 1;
+}
+.gps-dist span { font-family: 'DM Mono', monospace; font-size: 0.85rem; font-style: normal; color: var(--ink3); margin-left: 3px; }
+.gps-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink3); margin-bottom: 2px; }
+.gps-btn {
+  background: var(--green-soft); border: none; border-radius: 8px;
+  color: var(--green-dark); font-family: 'DM Mono', monospace; font-size: 11px;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 10px 14px; cursor: pointer; -webkit-appearance: none; flex-shrink: 0;
+  transition: background 0.15s;
+}
+.gps-btn:active { background: var(--green-pale); }
+.gps-btn.active { background: var(--green-pale); color: var(--green-dark); font-weight: 500; }
+.mode-btns {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 10px; margin-top: auto;
+}
+.btn-mode {
+  background: var(--green-dark); color: #f5f0e8; border: none;
+  border-radius: 14px; padding: 18px 8px; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  -webkit-appearance: none; transition: background 0.15s, transform 0.1s;
+}
+.btn-mode:active { background: var(--green-mid); transform: scale(0.96); }
+.btn-mode-main {
+  font-family: 'DM Serif Display', serif; font-size: 1.1rem;
+  font-style: italic; line-height: 1;
+}
+.btn-mode-sub {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.7;
+}
 @keyframes pop { 0%{transform:scale(0.85);opacity:0} 60%{transform:scale(1.06)} 100%{transform:scale(1);opacity:1} }
 .pop { animation: pop 0.2s ease both; }
 
@@ -343,16 +382,6 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
 .diff-banner.diff-good .diff-banner-sub { color: var(--eagle); }
 .diff-banner.diff-neutral .diff-banner-sub { color: var(--gold); }
 
-/* btn-start standalone (no flex parent) */
-.btn-start {
-  width: 100%; background: var(--green-dark); color: #f5f0e8; border: none;
-  border-radius: 16px; font-family: 'DM Mono', monospace;
-  font-size: 16px; font-weight: 500; letter-spacing: 0.12em;
-  text-transform: uppercase; padding: 22px;
-  cursor: pointer; margin-top: auto; min-height: 64px;
-  transition: background 0.15s, transform 0.1s; -webkit-appearance: none;
-}
-.btn-start:active { background: var(--green-mid); transform: scale(0.98); }
 </style>
 </head>
 <body>
@@ -368,14 +397,7 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
       <label>Mon index</label>
       <input type="number" id="sIndex" inputmode="decimal" min="0" max="54" step="0.1" value="54.0">
     </div>
-    <div class="field-group">
-      <label>Mode de jeu</label>
-      <select id="sMode" onchange="updateHcpPreview()">
-        <option value="18">18 trous (T1 → T18)</option>
-        <option value="9f">9 trous — Aller (T1 → T9)</option>
-        <option value="9b">9 trous — Retour (T10 → T18)</option>
-      </select>
-    </div>
+    <input type="hidden" id="sMode" value="18">
     <div class="hcp-preview">
       <div>
         <div class="lbl">Handicap de jeu</div>
@@ -383,7 +405,20 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
       </div>
       <div class="val" id="hcpPreview">54</div>
     </div>
-    <button class="btn-start" onclick="startGame()">Jouer ▶</button>
+    <div class="mode-btns">
+      <button class="btn-mode" onclick="startGame('18')">
+        <span class="btn-mode-main">18 trous</span>
+        <span class="btn-mode-sub">T1 → T18</span>
+      </button>
+      <button class="btn-mode" onclick="startGame('9f')">
+        <span class="btn-mode-main">9 trous</span>
+        <span class="btn-mode-sub">Départ T1</span>
+      </button>
+      <button class="btn-mode" onclick="startGame('9b')">
+        <span class="btn-mode-main">9 trous</span>
+        <span class="btn-mode-sub">Départ T10</span>
+      </button>
+    </div>
   </div>
 </div>
 
@@ -418,6 +453,13 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
     <button class="btn-icon" onclick="goSetup()">⚙</button>
   </div>
   <div class="hole-dots" id="holeDots"></div>
+  <div class="gps-bar">
+    <div>
+      <div class="gps-label">Distance drapeau</div>
+      <div class="gps-dist" id="gpsDist">—<span>m</span></div>
+    </div>
+    <button class="gps-btn" id="gpsBtn" onclick="toggleGps()">📍 GPS</button>
+  </div>
   <div class="hole-card">
     <div class="hole-info-row" id="infoRow"></div>
     <div class="score-control">
@@ -463,14 +505,39 @@ const COURSE = {
   name: "Mon Golf",
 
   // Slope et Course Rating (indiqués sur la carte de score du club)
-  slope: 113,
-  courseRating: 73.0,
+  slope: 131,
+  courseRating: 70.7,
 
   // ── 18 TROUS ──────────────────────────────────────────────────
   //             T1  T2  T3  T4  T5  T6  T7  T8  T9  T10 T11 T12 T13 T14 T15 T16 T17 T18
   par18:       [  4,  5,  4,  4,  3,  5,  3,  4,  4,   4,  4,  3,  5,  3,  4,  5,  4,  4 ],
   handicap18:  [ 18, 17, 10, 15, 12, 11, 16,  3,  1,   9,  7, 13,  8, 14,  6,  5,  4,  2 ],
   //  ^ index de difficulté du trou (1 = plus difficile, 18 = plus facile)
+
+  // ── GPS DES DRAPEAUX ─────────────────────────────────────────
+  // Remplace chaque { lat, lng } par les coordonnées réelles.
+  // Sur iPhone : Boussole → coordonnées en bas de l'écran.
+  // Sur Google Maps : appui long sur le green → coordonnées décimales.
+  greens: [
+    { lat: 0, lng: 0 },  // T1  ← à remplir
+    { lat: 0, lng: 0 },  // T2
+    { lat: 0, lng: 0 },  // T3
+    { lat: 0, lng: 0 },  // T4
+    { lat: 0, lng: 0 },  // T5
+    { lat: 0, lng: 0 },  // T6
+    { lat: 0, lng: 0 },  // T7
+    { lat: 0, lng: 0 },  // T8
+    { lat: 0, lng: 0 },  // T9
+    { lat: 0, lng: 0 },  // T10
+    { lat: 0, lng: 0 },  // T11
+    { lat: 0, lng: 0 },  // T12
+    { lat: 0, lng: 0 },  // T13
+    { lat: 0, lng: 0 },  // T14
+    { lat: 0, lng: 0 },  // T15
+    { lat: 0, lng: 0 },  // T16
+    { lat: 0, lng: 0 },  // T17
+    { lat: 0, lng: 0 },  // T18
+  ],
 
 };
 
@@ -479,7 +546,7 @@ const COURSE = {
 // ══════════════════════════════════════════════════════════════
 
 // ── Helpers calcul
-function calcHcp(idx, slope, cr, par){ return Math.round(idx * (slope / 113) + (cr - par)); }
+function calcHcp(idx, slope, cr, par){ return Math.min(54, Math.round(idx * (slope / 113) + (cr - par))); }
 function getCoupsAlloues(hcp, hi){ return Math.floor(hcp/18) + (hi <= (hcp%18) ? 1 : 0); }
 function stbNet(net, par){ return net === null ? null : Math.max(0, par - net + 2); }
 
@@ -513,7 +580,7 @@ let state = {
 };
 
 // ── Setup
-function getMode(){ return (document.getElementById('sMode') || {value:'18'}).value; }
+function getMode(){ return '18'; } // mode now passed directly to startGame
 
 function updateHcpPreview(){
   const idx  = parseFloat(document.getElementById('sIndex').value) || 0;
@@ -529,9 +596,9 @@ function updateHcpPreview(){
 
 document.getElementById('sIndex').addEventListener('input', updateHcpPreview);
 
-function startGame(){
+function startGame(mode){
   const idx  = parseFloat(document.getElementById('sIndex').value) || 0;
-  const mode = getMode();
+  mode = mode || '18';
 
   let pars, hcps, startHole, nbHoles;
   if(mode === '18'){
@@ -617,6 +684,8 @@ function renderPlay(){
     <div class="net-badge"><div class="nb-label">Stableford</div><div class="nb-val">${stb !== null ? stb+' pts' : '—'}</div></div>
     <div class="net-badge"><div class="nb-label">Hcp jeu</div><div class="nb-val">${state.playingHcp}</div></div>
   `;
+
+  refreshGpsForHole();
 
   const btnPrev = document.getElementById('btnPrev');
   const btnNext = document.getElementById('btnNext');
@@ -727,8 +796,65 @@ function renderScorecard(){
   document.getElementById('scTable').innerHTML = diffBanner + frontHtml + backHtml;
 }
 
+// ── GPS Distance
+let gpsWatchId = null;
+let gpsActive  = false;
+let lastGpsPos = null;
+
+function haversineM(lat1, lng1, lat2, lng2){
+  const R = 6371000;
+  const dLat = (lat2-lat1)*Math.PI/180;
+  const dLng = (lng2-lng1)*Math.PI/180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+  return Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
+}
+
+function updateGpsDisplay(pos){
+  lastGpsPos = pos;
+  const holeIdx = (state.startHole || 0) + state.current;
+  const green   = COURSE.greens && COURSE.greens[holeIdx];
+  const distEl  = document.getElementById('gpsDist');
+  if(!distEl) return;
+  if(!green || (green.lat === 0 && green.lng === 0)){
+    distEl.innerHTML = '?<span>m</span>'; return;
+  }
+  const d = haversineM(pos.coords.latitude, pos.coords.longitude, green.lat, green.lng);
+  distEl.innerHTML = d + '<span>m</span>';
+}
+
+function refreshGpsForHole(){
+  if(gpsActive && lastGpsPos) updateGpsDisplay(lastGpsPos);
+  else document.getElementById('gpsDist').innerHTML = gpsActive ? '…<span>m</span>' : '—<span>m</span>';
+}
+
+function toggleGps(){
+  const btn = document.getElementById('gpsBtn');
+  if(gpsActive){
+    if(gpsWatchId !== null){ navigator.geolocation.clearWatch(gpsWatchId); gpsWatchId = null; }
+    gpsActive = false;
+    btn.textContent = '📍 GPS'; btn.classList.remove('active');
+    document.getElementById('gpsDist').innerHTML = '—<span>m</span>';
+  } else {
+    if(!navigator.geolocation){
+      document.getElementById('gpsDist').innerHTML = '<span style="font-size:11px">Non dispo</span>'; return;
+    }
+    gpsActive = true;
+    btn.textContent = '📍 ON'; btn.classList.add('active');
+    document.getElementById('gpsDist').innerHTML = '…<span>m</span>';
+    gpsWatchId = navigator.geolocation.watchPosition(
+      updateGpsDisplay,
+      function(){ document.getElementById('gpsDist').innerHTML = '!<span>m</span>'; },
+      { enableHighAccuracy: true, maximumAge: 3000, timeout: 10000 }
+    );
+  }
+}
+
 // ── Navigation
 function showScreen(id){
+  if(id !== 'playScreen' && gpsActive){
+    if(gpsWatchId !== null){ navigator.geolocation.clearWatch(gpsWatchId); gpsWatchId = null; }
+    gpsActive = false; lastGpsPos = null;
+  }
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
