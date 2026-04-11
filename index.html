@@ -398,6 +398,13 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
       <input type="number" id="sIndex" inputmode="decimal" min="0" max="54" step="0.1" value="54.0">
     </div>
     <input type="hidden" id="sMode" value="18">
+    <div class="hcp-preview">
+      <div>
+        <div class="lbl">Handicap de jeu</div>
+        <div class="sublbl" id="courseNameLabel">—</div>
+      </div>
+      <div class="val" id="hcpPreview">54</div>
+    </div>
     <div class="mode-btns">
       <button class="btn-mode" onclick="startGame('18')">
         <span class="btn-mode-main">18 trous</span>
@@ -411,13 +418,6 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
         <span class="btn-mode-main">9 trous</span>
         <span class="btn-mode-sub">Départ T10</span>
       </button>
-    </div>
-    <div class="hcp-preview">
-      <div>
-        <div class="lbl">Handicap de jeu</div>
-        <div class="sublbl" id="courseNameLabel">—</div>
-      </div>
-      <div class="val" id="hcpPreview">54</div>
     </div>
   </div>
 </div>
@@ -450,7 +450,7 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
       <div class="hole-label">Trou</div>
       <div class="hole-num" id="topHoleNum">1</div>
     </div>
-    <button class="btn-icon" onclick="goSetup()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg></button>
+    <button class="btn-icon" onclick="goSetup()">⚙</button>
   </div>
   <div class="hole-dots" id="holeDots"></div>
   <div class="gps-bar">
@@ -627,7 +627,7 @@ function goSetup(){ showScreen('setupScreen'); }
 function adjustScore(delta){
   const i = state.current, par = state.pars[i];
   const cur = state.scores[i];
-  if(cur === null){ state.scores[i] = 0; }
+  if(cur === null){ state.scores[i] = 1; }
   else {
     const next = cur + delta;
     if(next < 0 || next > par + 8) return;
@@ -668,7 +668,7 @@ function renderPlay(){
 
   document.getElementById('infoRow').innerHTML = `
     <div class="info-pill"><div class="p-label">Par</div><div class="p-val">${par}</div></div>
-    <div class="info-pill"><div class="p-label">Index du trou</div><div class="p-val">${hi}</div></div>
+    <div class="info-pill"><div class="p-label">Idx trou</div><div class="p-val">${hi}</div></div>
     <div class="info-pill gold-pill"><div class="p-label">Coups +</div><div class="p-val">${coups > 0 ? '+'+coups : '0'}</div></div>
   `;
 
