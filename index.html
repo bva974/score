@@ -6,23 +6,23 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Golf Score</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
   --green:      #2d6a2d;
-  --green-dark: #1e4d1e;
-  --green-mid:  #3a7a3a;
-  --green-soft: #e8f2e8;
-  --green-pale: #c8e0c8;
-  --bg:         #f4f0e6;
-  --bg2:        #ece7d8;
+  --green-dark: #166534;
+  --green-mid:  #16a34a;
+  --green-soft: #f0fdf4;
+  --green-pale: #bbf7d0;
+  --bg:         #f8f7f4;
+  --bg2:        #eeecea;
   --surface:    #ffffff;
-  --gold:       #9a7020;
-  --gold-bg:    #faf0d8;
-  --gold-bdr:   #d4a830;
-  --ink:        #1a2e1a;
-  --ink2:       #3d4e3d;
-  --ink3:       #7a8a7a;
+  --gold:       #92400e;
+  --gold-bg:    #fffbeb;
+  --gold-bdr:   #d97706;
+  --ink:        #111827;
+  --ink2:       #374151;
+  --ink3:       #6b7280;
   --eagle:      #0d5c3a; --eagle-bg: #d0f0e0;
   --birdie:     #1a3f6e; --birdie-bg: #cce0f5;
   --par-col:    #4a5a4a; --par-bg: #e8e2d0;
@@ -31,7 +31,7 @@
   --worse:      #5c1010; --worse-bg: #f0aaaa;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-serif; color: var(--ink); overflow: hidden; }
+html, body { height: 100%; background: var(--bg); font-family: 'Inter', sans-serif; color: var(--ink); overflow: hidden; }
 
 .screen { display: none; height: 100dvh; flex-direction: column; }
 .screen.active { display: flex; }
@@ -43,7 +43,7 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
   border-bottom: 3px solid var(--gold-bdr); flex-shrink: 0;
 }
 .page-header h2 {
-  font-family: 'DM Serif Display', serif; font-size: 1.5rem;
+  font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 600;
   font-style: italic; color: #f5f0e8; flex: 1;
 }
 .page-header .btn-back {
@@ -61,24 +61,24 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
   text-align: center; border-bottom: 3px solid var(--gold-bdr);
 }
 .setup-header .eyebrow {
-  font-family: 'DM Mono', monospace; font-size: 10px;
-  letter-spacing: 0.2em; text-transform: uppercase;
+  font-family: 'Inter', sans-serif; font-size: 10px;
+  letter-spacing: 0.03em; text-transform: uppercase;
   color: var(--green-pale); margin-bottom: 0.4rem;
 }
 .setup-header h1 {
-  font-family: 'DM Serif Display', serif; font-size: 2.4rem;
+  font-family: 'Outfit', sans-serif; font-size: 2.4rem; font-weight: 700;
   font-style: italic; color: #f5f0e8; line-height: 1;
 }
 .setup-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; flex: 1; }
 .field-group { display: flex; flex-direction: column; gap: 5px; }
 .field-group label {
-  font-family: 'DM Mono', monospace; font-size: 10px;
-  letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink3);
+  font-family: 'Inter', sans-serif; font-size: 10px;
+  letter-spacing: 0.03em; text-transform: uppercase; color: var(--ink3);
 }
 .field-group input, .field-group select {
   background: var(--surface); border: 1.5px solid #d8d0bc;
   border-radius: 10px; color: var(--ink);
-  font-family: 'DM Mono', monospace; font-size: 1.3rem; font-weight: 500;
+  font-family: 'Inter', sans-serif; font-size: 1.3rem; font-weight: 500;
   padding: 14px 16px; width: 100%; outline: none;
   -webkit-appearance: none; appearance: none; transition: border-color 0.2s;
   box-shadow: 0 1px 3px rgba(0,0,0,0.06);
@@ -90,8 +90,8 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
   border-radius: 12px; padding: 1rem;
   display: flex; align-items: center; justify-content: space-between;
 }
-.hcp-preview .lbl { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); }
-.hcp-preview .val { font-family: 'DM Serif Display', serif; font-size: 2.2rem; font-style: italic; color: var(--gold); }
+.hcp-preview .lbl { font-family: 'Inter', sans-serif; font-size: 11px; letter-spacing: 0.03em; text-transform: uppercase; color: var(--gold); }
+.hcp-preview .val { font-family: 'Outfit', sans-serif; font-size: 2.2rem; font-weight: 700; font-style: italic; color: var(--gold); }
 .hcp-preview .sublbl { font-size: 11px; color: var(--gold); opacity: 0.65; margin-top: 2px; }
 
 .btn-row { display: flex; gap: 10px; margin-top: auto; }
@@ -99,7 +99,7 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
 .btn-course-cfg {
   background: var(--surface); color: var(--ink2);
   border: 1.5px solid #d8d0bc; border-radius: 12px;
-  font-family: 'DM Mono', monospace; font-size: 13px;
+  font-family: 'Inter', sans-serif; font-size: 13px;
   padding: 18px 16px; cursor: pointer; white-space: nowrap;
   -webkit-appearance: none; transition: background 0.15s;
 }
@@ -113,14 +113,14 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
 .course-name-row input {
   background: var(--surface); border: 1.5px solid #d8d0bc;
   border-radius: 10px; color: var(--ink);
-  font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 500;
+  font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 500;
   padding: 12px 16px; width: 100%; outline: none; -webkit-appearance: none;
   box-shadow: 0 1px 3px rgba(0,0,0,0.06); transition: border-color 0.2s;
 }
 .course-name-row input:focus { border-color: var(--green-mid); }
 .course-name-row label {
-  font-family: 'DM Mono', monospace; font-size: 10px;
-  letter-spacing: 0.15em; text-transform: uppercase;
+  font-family: 'Inter', sans-serif; font-size: 10px;
+  letter-spacing: 0.03em; text-transform: uppercase;
   color: var(--ink3); display: block; margin-bottom: 5px;
 }
 
@@ -136,7 +136,7 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
   box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
 .hole-cfg-num {
-  font-family: 'DM Serif Display', serif; font-size: 1.2rem;
+  font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 600;
   font-style: italic; color: var(--ink3);
   text-align: center; padding: 0 4px;
   border-right: 1px solid #eee8dc;
@@ -149,12 +149,12 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
 }
 .hole-cfg-field:last-child { border-right: none; }
 .hole-cfg-field span {
-  font-family: 'DM Mono', monospace; font-size: 9px;
-  letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink3); margin-bottom: 3px;
+  font-family: 'Inter', sans-serif; font-size: 9px;
+  letter-spacing: 0.03em; text-transform: uppercase; color: var(--ink3); margin-bottom: 3px;
 }
 .hole-cfg-field input {
   background: transparent; border: none; outline: none;
-  font-family: 'DM Mono', monospace; font-size: 1.2rem; font-weight: 500;
+  font-family: 'Inter', sans-serif; font-size: 1.2rem; font-weight: 500;
   color: var(--ink); width: 100%; padding: 0;
   -webkit-appearance: none; appearance: none;
 }
@@ -163,15 +163,15 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
   height: 1px; background: var(--green-pale); margin: 12px 0 10px;
 }
 .section-label-sm {
-  font-family: 'DM Mono', monospace; font-size: 10px;
-  letter-spacing: 0.15em; text-transform: uppercase;
+  font-family: 'Inter', sans-serif; font-size: 10px;
+  letter-spacing: 0.03em; text-transform: uppercase;
   color: var(--green); margin-bottom: 8px;
 }
 
 .btn-save-course {
   width: 100%; background: var(--green-dark); color: #f5f0e8; border: none;
-  border-radius: 12px; font-family: 'DM Mono', monospace;
-  font-size: 14px; font-weight: 500; letter-spacing: 0.1em;
+  border-radius: 12px; font-family: 'Inter', sans-serif;
+  font-size: 14px; font-weight: 500; letter-spacing: 0.03em;
   text-transform: uppercase; padding: 18px; margin-top: 1.25rem;
   cursor: pointer; -webkit-appearance: none; transition: background 0.15s;
 }
@@ -193,17 +193,22 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
 }
 .top-bar .btn-icon:active { background: var(--green-pale); }
 .top-center { flex: 1; text-align: center; }
-.top-center .hole-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink3); }
-.top-center .hole-num { font-family: 'DM Serif Display', serif; font-size: 1.8rem; font-style: italic; color: var(--ink); line-height: 1; }
+.top-center .hole-label { font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: 0.03em; text-transform: uppercase; color: var(--ink3); }
+.top-center .hole-num { font-family: 'Outfit', sans-serif; font-size: 1.8rem; font-weight: 700; font-style: italic; color: var(--ink); line-height: 1; }
 .hole-dots {
   display: flex; align-items: center; justify-content: center;
   gap: 5px; padding: 10px 1.25rem;
   background: var(--surface); flex-shrink: 0; flex-wrap: wrap;
   border-bottom: 1px solid #e8e2d4;
 }
-.dot { width: 22px; height: 6px; border-radius: 3px; background: #ddd8cc; cursor: pointer; transition: background 0.2s; flex-shrink: 0; }
-.dot.played { background: var(--green-mid); }
-.dot.current { background: var(--gold-bdr); }
+.dot { width: 22px; height: 6px; border-radius: 3px; background: #e2e8f0; cursor: pointer; transition: background 0.2s; flex-shrink: 0; }
+.dot.current  { background: var(--gold-bdr); }
+.dot.d-eagle  { background: #0b5c38; }
+.dot.d-birdie { background: #1e5fa0; }
+.dot.d-par    { background: #94a3b8; }
+.dot.d-bogey  { background: #b07800; }
+.dot.d-double { background: #a02020; }
+.dot.d-worse  { background: #701010; }
 .hole-card {
   flex: 1; display: flex; flex-direction: column;
   align-items: center; justify-content: center;
@@ -215,8 +220,8 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
   border-radius: 12px; padding: 12px 16px; text-align: center; flex: 1;
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
-.info-pill .p-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink3); margin-bottom: 4px; }
-.info-pill .p-val { font-family: 'DM Serif Display', serif; font-size: 1.6rem; font-style: italic; color: var(--ink); line-height: 1; }
+.info-pill .p-label { font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: 0.03em; text-transform: uppercase; color: var(--ink3); margin-bottom: 4px; }
+.info-pill .p-val { font-family: 'Outfit', sans-serif; font-size: 1.6rem; font-weight: 600; font-style: italic; color: var(--ink); line-height: 1; }
 .info-pill.gold-pill { background: var(--gold-bg); border-color: var(--gold-bdr); }
 .info-pill.gold-pill .p-label { color: var(--gold); }
 .info-pill.gold-pill .p-val   { color: var(--gold); }
@@ -231,7 +236,7 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
 .btn-minus { background: var(--bg2); color: var(--ink2); box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
 .btn-plus  { background: var(--green-dark); color: #f5f0e8; box-shadow: 0 2px 8px rgba(30,77,30,0.35); }
 .score-display { text-align: center; min-width: 100px; }
-.score-big { font-family: 'DM Serif Display', serif; font-size: 5.5rem; font-style: italic; line-height: 1; transition: color 0.2s; }
+.score-big { font-family: 'Outfit', sans-serif; font-size: 5.5rem; font-weight: 700; font-style: italic; line-height: 1; transition: color 0.2s; }
 .score-big.eagle  { color: var(--eagle); }
 .score-big.birdie { color: var(--birdie); }
 .score-big.par    { color: var(--ink); }
@@ -239,7 +244,7 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
 .score-big.double { color: var(--double); }
 .score-big.worse  { color: var(--worse); }
 .score-big.empty  { color: #c8c0b0; }
-.score-label { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 4px; height: 16px; }
+.score-label { font-family: 'Inter', sans-serif; font-size: 11px; letter-spacing: 0.03em; text-transform: uppercase; margin-top: 4px; height: 16px; }
 .score-label.eagle  { color: var(--eagle); }
 .score-label.birdie { color: var(--birdie); }
 .score-label.par    { color: var(--ink3); }
@@ -247,18 +252,19 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
 .score-label.double { color: var(--double); }
 .score-label.worse  { color: var(--worse); }
 .score-label.empty  { color: transparent; }
+.score-label-net { font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 400; letter-spacing: 0.03em; text-transform: uppercase; color: var(--ink3); opacity: 0.6; margin-top: 2px; height: 14px; }
 .net-row { display: flex; gap: 10px; width: 100%; }
 .net-badge {
   flex: 1; background: var(--surface); border: 1px solid #ddd8cc;
   border-radius: 10px; padding: 10px; text-align: center;
   box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
-.net-badge .nb-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink3); margin-bottom: 3px; }
-.net-badge .nb-val { font-family: 'DM Mono', monospace; font-size: 1.1rem; font-weight: 500; color: var(--ink); }
+.net-badge .nb-label { font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: 0.03em; text-transform: uppercase; color: var(--ink3); margin-bottom: 3px; }
+.net-badge .nb-val { font-family: 'Inter', sans-serif; font-size: 1.1rem; font-weight: 500; color: var(--ink); }
 .nav-row { display: flex; gap: 10px; padding: 0 1.5rem 1.5rem; flex-shrink: 0; }
 .btn-nav {
   flex: 1; padding: 18px; border-radius: 10px; border: none;
-  font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500;
+  font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500;
   letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer;
   transition: background 0.15s, transform 0.08s; -webkit-appearance: none;
 }
@@ -275,27 +281,27 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
   position: sticky; top: 0; z-index: 10;
   box-shadow: 0 2px 6px rgba(0,0,0,0.07);
 }
-.sc-header h2 { font-family: 'DM Serif Display', serif; font-size: 1.6rem; font-style: italic; color: var(--ink); }
-.sc-header .sc-sub { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin-top: 2px; }
+.sc-header h2 { font-family: 'Outfit', sans-serif; font-size: 1.6rem; font-weight: 600; font-style: italic; color: var(--ink); }
+.sc-header .sc-sub { font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: 0.03em; text-transform: uppercase; color: var(--gold); margin-top: 2px; }
 .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid #ddd8cc; background: var(--surface); }
 .s-metric { padding: 1.25rem 0.5rem; text-align: center; border-right: 1px solid #ddd8cc; }
 .s-metric:last-child { border-right: none; }
-.s-metric .sv { font-family: 'DM Serif Display', serif; font-size: 1.8rem; font-style: italic; color: var(--ink); line-height: 1; }
+.s-metric .sv { font-family: 'Outfit', sans-serif; font-size: 1.8rem; font-weight: 700; font-style: italic; color: var(--ink); line-height: 1; }
 .s-metric .sv.good { color: var(--eagle); }
 .s-metric .sv.bad  { color: var(--double); }
-.s-metric .sl { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink3); margin-top: 4px; }
+.s-metric .sl { font-family: 'Inter', sans-serif; font-size: 9px; letter-spacing: 0.03em; text-transform: uppercase; color: var(--ink3); margin-top: 4px; }
 .sc-table { padding: 0 0 2rem; }
-.sc-section-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); padding: 1rem 1.25rem 0.5rem; }
-.sc-row { display: grid; grid-template-columns: 32px 30px 30px 36px 40px 40px 1fr; align-items: center; padding: 9px 1.25rem; border-bottom: 1px solid #ece7d8; font-size: 13px; background: var(--surface); }
+.sc-section-label { font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: 0.03em; text-transform: uppercase; color: var(--gold); padding: 1rem 1.25rem 0.5rem; }
+.sc-row { display: grid; grid-template-columns: 26px 26px 26px 30px 34px 34px 1fr 1fr; align-items: center; padding: 8px 0.9rem; border-bottom: 1px solid #ece7d8; font-size: 12px; background: var(--surface); }
 .sc-row:nth-child(even) { background: #faf8f2; }
-.sc-row.header-row { background: var(--green-soft); font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--green-dark); padding-top: 6px; padding-bottom: 6px; }
+.sc-row.header-row { background: var(--green-soft); font-family: 'Inter', sans-serif; font-size: 9px; letter-spacing: 0.03em; text-transform: uppercase; color: var(--green-dark); padding-top: 6px; padding-bottom: 6px; }
 .sc-row > * { text-align: center; }
 .sc-row > *:first-child { text-align: left; }
-.sc-row .hole-n { font-family: 'DM Serif Display', serif; font-size: 1.1rem; font-style: italic; color: var(--ink); }
-.sc-row .cell { color: var(--ink2); font-family: 'DM Mono', monospace; }
+.sc-row .hole-n { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 600; font-style: italic; color: var(--ink); }
+.sc-row .cell { color: var(--ink2); font-family: 'Inter', sans-serif; }
 .sc-row .cell.brut { font-weight: 500; color: var(--ink); }
 .sc-row .cell.empty-score { color: #c0bab0; }
-.diff-chip { display: inline-block; padding: 2px 8px; border-radius: 4px; font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500; text-align: center; }
+.diff-chip { display: inline-block; padding: 2px 8px; border-radius: 4px; font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 500; text-align: center; }
 .diff-chip.eagle  { background: var(--eagle-bg);  color: var(--eagle); }
 .diff-chip.birdie { background: var(--birdie-bg); color: var(--birdie); }
 .diff-chip.par    { background: var(--par-bg);    color: var(--par-col); }
@@ -303,13 +309,13 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
 .diff-chip.double { background: var(--double-bg); color: var(--double); }
 .diff-chip.worse  { background: var(--worse-bg);  color: var(--worse); }
 .diff-chip.empty  { background: transparent; color: transparent; }
-.sc-subtotal { display: grid; grid-template-columns: 32px 30px 30px 36px 40px 40px 1fr; padding: 8px 1.25rem; background: var(--green-soft); border-top: 1px solid var(--green-pale); border-bottom: 1px solid var(--green-pale); }
-.sc-subtotal > * { text-align: center; font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500; color: var(--ink2); }
+.sc-subtotal { display: grid; grid-template-columns: 26px 26px 26px 30px 34px 34px 1fr 1fr; padding: 8px 1.25rem; background: var(--green-soft); border-top: 1px solid var(--green-pale); border-bottom: 1px solid var(--green-pale); }
+.sc-subtotal > * { text-align: center; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; color: var(--ink2); }
 .sc-subtotal > *:first-child { text-align: left; color: var(--green-dark); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
 .sc-footer { padding: 1.25rem; display: flex; gap: 10px; flex-shrink: 0; }
-.btn-resume { flex: 1; padding: 16px; border-radius: 10px; border: none; background: var(--green-dark); color: #f5f0e8; font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; -webkit-appearance: none; transition: background 0.15s; }
+.btn-resume { flex: 1; padding: 16px; border-radius: 10px; border: none; background: var(--green-dark); color: #f5f0e8; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; -webkit-appearance: none; transition: background 0.15s; }
 .btn-resume:active { background: var(--green-mid); }
-.btn-restart { padding: 16px 20px; border-radius: 10px; border: 1.5px solid #ccc8bc; background: var(--surface); color: var(--ink2); font-family: 'DM Mono', monospace; font-size: 13px; cursor: pointer; -webkit-appearance: none; }
+.btn-restart { padding: 16px 20px; border-radius: 10px; border: 1.5px solid #ccc8bc; background: var(--surface); color: var(--ink2); font-family: 'Inter', sans-serif; font-size: 13px; cursor: pointer; -webkit-appearance: none; }
 .btn-restart:active { background: var(--bg2); }
 
 .gps-bar {
@@ -318,14 +324,14 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
   background: var(--surface); border-bottom: 1px solid #e8e2d4;
 }
 .gps-dist {
-  font-family: 'DM Serif Display', serif; font-size: 1.5rem;
+  font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 600;
   font-style: italic; color: var(--green-dark); line-height: 1;
 }
-.gps-dist span { font-family: 'DM Mono', monospace; font-size: 0.85rem; font-style: normal; color: var(--ink3); margin-left: 3px; }
-.gps-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink3); margin-bottom: 2px; }
+.gps-dist span { font-family: 'Inter', sans-serif; font-size: 0.85rem; font-style: normal; color: var(--ink3); margin-left: 3px; }
+.gps-label { font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: 0.03em; text-transform: uppercase; color: var(--ink3); margin-bottom: 2px; }
 .gps-btn {
   background: var(--green-soft); border: none; border-radius: 8px;
-  color: var(--green-dark); font-family: 'DM Mono', monospace; font-size: 11px;
+  color: var(--green-dark); font-family: 'Inter', sans-serif; font-size: 11px;
   letter-spacing: 0.08em; text-transform: uppercase;
   padding: 10px 14px; cursor: pointer; -webkit-appearance: none; flex-shrink: 0;
   transition: background 0.15s;
@@ -344,11 +350,11 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
 }
 .btn-mode:active { background: var(--green-mid); transform: scale(0.96); }
 .btn-mode-main {
-  font-family: 'DM Serif Display', serif; font-size: 1.1rem;
+  font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 600;
   font-style: italic; line-height: 1;
 }
 .btn-mode-sub {
-  font-family: 'DM Mono', monospace; font-size: 10px;
+  font-family: 'Inter', sans-serif; font-size: 10px;
   letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.7;
 }
 @keyframes pop { 0%{transform:scale(0.85);opacity:0} 60%{transform:scale(1.06)} 100%{transform:scale(1);opacity:1} }
@@ -367,13 +373,13 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
 .diff-banner.diff-good { background: var(--eagle-bg); border: 1px solid #a0d8bc; }
 .diff-banner.diff-neutral { background: var(--gold-bg); border: 1px solid var(--gold-bdr); }
 .diff-banner-label {
-  font-family: 'DM Mono', monospace; font-size: 10px;
-  letter-spacing: 0.12em; text-transform: uppercase;
+  font-family: 'Inter', sans-serif; font-size: 10px;
+  letter-spacing: 0.03em; text-transform: uppercase;
 }
 .diff-banner.diff-good .diff-banner-label { color: var(--eagle); }
 .diff-banner.diff-neutral .diff-banner-label { color: var(--gold); }
 .diff-banner-val {
-  font-family: 'DM Serif Display', serif; font-size: 2rem;
+  font-family: 'Outfit', sans-serif; font-size: 2rem;
   font-style: italic; line-height: 1;
 }
 .diff-banner.diff-good .diff-banner-val { color: var(--eagle); }
@@ -467,6 +473,7 @@ html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-s
       <div class="score-display">
         <div class="score-big empty" id="scoreBig">—</div>
         <div class="score-label empty" id="scoreLabel"> </div>
+        <div class="score-label-net" id="scoreLabelNet"> </div>
       </div>
       <button class="btn-score btn-plus" ontouchstart="" onclick="adjustScore(1)">+</button>
     </div>
@@ -546,7 +553,7 @@ const COURSE = {
 // ══════════════════════════════════════════════════════════════
 
 // ── Helpers calcul
-function calcHcp(idx, slope, cr, par){ return Math.round(idx * (slope / 113) + (cr - par)); }
+function calcHcp(idx, slope, cr, par){ return Math.min(54, Math.round(idx * (slope / 113) + (cr - par))); }
 function getCoupsAlloues(hcp, hi){ return Math.floor(hcp/18) + (hi <= (hcp%18) ? 1 : 0); }
 function stbNet(net, par){ return net === null ? null : Math.max(0, par - net + 2); }
 
@@ -661,7 +668,21 @@ function renderPlay(){
   dotsEl.innerHTML = '';
   for(let j = 0; j < state.nbHoles; j++){
     const d = document.createElement('div');
-    d.className = 'dot' + (j === i ? ' current' : state.scores[j] !== null ? ' played' : '');
+    let dotCls = 'dot';
+    if(j === i){
+      dotCls += ' current';
+    } else if(state.scores[j] !== null){
+      const sc_j  = state.scores[j];
+      const cj    = getCoupsAlloues(state.playingHcp, state.hcpIdxs[j]);
+      const dj    = (sc_j - cj) - state.pars[j];
+      if     (dj <= -2) dotCls += ' d-eagle';
+      else if(dj === -1) dotCls += ' d-birdie';
+      else if(dj === 0)  dotCls += ' d-par';
+      else if(dj === 1)  dotCls += ' d-bogey';
+      else if(dj === 2)  dotCls += ' d-double';
+      else               dotCls += ' d-worse';
+    }
+    d.className = dotCls;
     d.onclick = (function(jj){ return function(){ state.current = jj; renderPlay(); }; })(j);
     dotsEl.appendChild(d);
   }
@@ -672,17 +693,33 @@ function renderPlay(){
     <div class="info-pill gold-pill"><div class="p-label">Coups +</div><div class="p-val">${coups > 0 ? '+'+coups : '0'}</div></div>
   `;
 
-  const dc = brut !== null ? getDiffClass(net, par) : 'empty';
-  document.getElementById('scoreBig').textContent  = brut !== null ? brut : '—';
-  document.getElementById('scoreBig').className    = 'score-big pop ' + dc;
-  document.getElementById('scoreLabel').textContent = getDiffLabel(net, par);
-  document.getElementById('scoreLabel').className   = 'score-label ' + dc;
+  const dcBrut = brut !== null ? getDiffClass(brut, par) : 'empty';
+  const dlBrut = brut !== null ? getDiffLabel(brut, par) : '';
+  const dcNet  = brut !== null ? getDiffClass(net,  par) : 'empty';
+  const dlNet  = brut !== null ? getDiffLabel(net,  par) : '';
+  document.getElementById('scoreBig').textContent   = brut !== null ? brut : '—';
+  document.getElementById('scoreBig').className     = 'score-big pop ' + dcBrut;
+  document.getElementById('scoreLabel').textContent = dlBrut;
+  document.getElementById('scoreLabel').className   = 'score-label ' + dcBrut;
+  const netLbl = document.getElementById('scoreLabelNet');
+  if(netLbl) netLbl.textContent = (brut !== null && dlNet !== dlBrut) ? dlNet + ' (net)' : '';
 
   const stb = stbNet(net, par);
+  let runBrut=0, runNet=0, runPar=0, runCount=0;
+  for(let j=0;j<state.nbHoles;j++){
+    if(state.scores[j]!==null){
+      const cj=getCoupsAlloues(state.playingHcp,state.hcpIdxs[j]);
+      runBrut+=state.scores[j]; runNet+=state.scores[j]-cj; runPar+=state.pars[j]; runCount++;
+    }
+  }
+  const brutDiff = runCount>0 ? runBrut-runPar : null;
+  const netDiff  = runCount>0 ? runNet-runPar  : null;
+  const fmtD = d => d===null?'—':d>0?'+'+d:d===0?'E':''+d;
+  const clrD = d => d===null?'':d<0?'color:var(--eagle)':d===0?'color:var(--ink3)':d<=2?'color:var(--bogey)':'color:var(--double)';
   document.getElementById('netRow').innerHTML = `
     <div class="net-badge"><div class="nb-label">Score net</div><div class="nb-val">${net !== null ? net : '—'}</div></div>
-    <div class="net-badge"><div class="nb-label">Stableford</div><div class="nb-val">${stb !== null ? stb+' pts' : '—'}</div></div>
-    <div class="net-badge"><div class="nb-label">Hcp jeu</div><div class="nb-val">${state.playingHcp}</div></div>
+    <div class="net-badge" style="border-color:var(--gold-bdr);background:var(--gold-bg)"><div class="nb-label" style="color:var(--gold)">Total brut</div><div class="nb-val" style="${clrD(brutDiff)}">${fmtD(brutDiff)}</div></div>
+    <div class="net-badge" style="border-color:var(--gold-bdr);background:var(--gold-bg)"><div class="nb-label" style="color:var(--gold)">Total net</div><div class="nb-val" style="${clrD(netDiff)}">${fmtD(netDiff)}</div></div>
   `;
 
   refreshGpsForHole();
@@ -691,8 +728,10 @@ function renderPlay(){
   const btnNext = document.getElementById('btnNext');
   btnPrev.disabled = i === 0; btnPrev.style.opacity = i === 0 ? '0.3' : '1';
   const isLast = i === state.nbHoles - 1;
-  btnNext.textContent = isLast ? 'Voir score ▶' : 'Suiv. →';
-  btnNext.className = 'btn-nav btn-next' + (isLast ? ' finish' : '');
+  const hasScore = state.scores[i] !== null;
+  const showScore = isLast && hasScore;
+  btnNext.textContent = showScore ? 'Voir score ▶' : 'Suiv. →';
+  btnNext.className = 'btn-nav btn-next' + (showScore ? ' finish' : '');
 }
 
 // ── Render scorecard
@@ -753,16 +792,24 @@ function renderScorecard(){
   // Index différentiel banner (18 trous complets seulement)
   let diffBanner = '';
   if(allPlayed && n === 18){
-    const d = calcDifferentiel(tBrut, COURSE.slope, COURSE.courseRating);
-    const better = d < state.index;
-    diffBanner = `<div class="diff-banner ${better?'diff-good':'diff-neutral'}">
-      <span class="diff-banner-label">Différentiel WHS</span>
-      <span class="diff-banner-val">${d > 0 ? '+'+d : d}</span>
-      <span class="diff-banner-sub">${better ? '▼ meilleur que votre index ('+state.index+')' : 'Index actuel : '+state.index}</span>
+    const dBrut = calcDifferentiel(tBrut, COURSE.slope, COURSE.courseRating);
+    const dNet  = calcDifferentiel(tNet,  COURSE.slope, COURSE.courseRating);
+    const fmt = d => d > 0 ? '+'+d : ''+d;
+    diffBanner = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:1rem 1.25rem 0.5rem">
+      <div class="diff-banner ${dBrut < state.index ? 'diff-good' : 'diff-neutral'}">
+        <span class="diff-banner-label">Différentiel brut</span>
+        <span class="diff-banner-val">${fmt(dBrut)}</span>
+        <span class="diff-banner-sub">Sans coups rendus</span>
+      </div>
+      <div class="diff-banner ${dNet < state.index ? 'diff-good' : 'diff-neutral'}">
+        <span class="diff-banner-label">Différentiel net</span>
+        <span class="diff-banner-val">${fmt(dNet)}</span>
+        <span class="diff-banner-sub">Avec ${state.playingHcp} coups rendus</span>
+      </div>
     </div>`;
   }
 
-  const headerRow = `<div class="sc-row header-row"><span>N°</span><span>Par</span><span>Idx</span><span>+</span><span>Brut</span><span>Net</span><span>Résultat</span></div>`;
+  const headerRow = `<div class="sc-row header-row"><span>N°</span><span>Par</span><span>Idx</span><span>+</span><span>Brut</span><span>Net</span><span>Brut</span><span>Net</span></div>`;
   const sectionLabel = state.nbHoles === 18 ? 'Aller' : (state.startHole === 0 ? 'Aller' : 'Retour');
   let frontHtml = `<div class="sc-section-label">${sectionLabel}</div>` + headerRow;
   let backHtml  = n > 9 ? '<div class="sc-section-label">Retour</div>' + headerRow : '';
@@ -774,15 +821,18 @@ function renderScorecard(){
     const coups = getCoupsAlloues(state.playingHcp, hi);
     const brut  = state.scores[i];
     const net   = brut !== null ? brut - coups : null;
-    const dc    = getDiffClass(net, par), dl = getDiffLabel(net, par);
+    const dcBrutSc=getDiffClass(brut,par), dlBrutSc=getDiffLabel(brut,par);
+    const dcNetSc =getDiffClass(net, par), dlNetSc =getDiffLabel(net, par);
+    const clr = (d,v) => d==='eagle'?'var(--eagle)':d==='birdie'?'var(--birdie)':d==='bogey'?'var(--bogey)':d==='double'||d==='worse'?'var(--double)':v===null?'#c0bab0':'var(--ink)';
     const hNum  = state.startHole + i + 1;
     const row = `<div class="sc-row">
       <span class="hole-n">${hNum}</span>
       <span class="cell">${par}</span><span class="cell">${hi}</span>
       <span class="cell">${coups > 0 ? '+'+coups : '0'}</span>
-      <span class="cell brut ${brut===null?'empty-score':''}">${brut!==null?brut:'—'}</span>
-      <span class="cell ${net===null?'empty-score':''}">${net!==null?net:'—'}</span>
-      <span><span class="diff-chip ${dc}">${dl||'—'}</span></span>
+      <span class="cell" style="font-weight:600;color:${clr(dcBrutSc,brut)}">${brut!==null?brut:'—'}</span>
+      <span class="cell" style="font-weight:500;color:${clr(dcNetSc,net)}">${net!==null?net:'—'}</span>
+      <span><span class="diff-chip ${dcBrutSc}">${dlBrutSc||'—'}</span></span>
+      <span><span class="diff-chip ${dcNetSc}">${dlNetSc||'—'}</span></span>
     </div>`;
     if(i < mid){ frontHtml += row; if(brut!==null) fHas=true; }
     else        { backHtml  += row; if(brut!==null) bHas=true; }
@@ -790,8 +840,8 @@ function renderScorecard(){
 
   const fHasAny = state.scores.slice(0,mid).some(s=>s!==null);
   const bHasAny = state.scores.slice(mid).some(s=>s!==null);
-  frontHtml += `<div class="sc-subtotal"><span>${sectionLabel}</span><span>${fPar}</span><span></span><span></span><span>${fHasAny?fBrut:'—'}</span><span>${fHasAny?fNet:'—'}</span><span></span></div>`;
-  if(n > 9) backHtml += `<div class="sc-subtotal"><span>Retour</span><span>${bPar}</span><span></span><span></span><span>${bHasAny?bBrut:'—'}</span><span>${bHasAny?bNet:'—'}</span><span></span></div>`;
+  frontHtml += `<div class="sc-subtotal"><span>${sectionLabel}</span><span>${fPar}</span><span></span><span></span><span>${fHasAny?fBrut:'—'}</span><span>${fHasAny?fNet:'—'}</span><span></span><span></span></div>`;
+  if(n > 9) backHtml += `<div class="sc-subtotal"><span>Retour</span><span>${bPar}</span><span></span><span></span><span>${bHasAny?bBrut:'—'}</span><span>${bHasAny?bNet:'—'}</span><span></span><span></span></div>`;
 
   document.getElementById('scTable').innerHTML = diffBanner + frontHtml + backHtml;
 }
