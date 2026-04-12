@@ -566,14 +566,15 @@ function calcDifferentiel(brutTotal, slope, cr){
 function getDiffClass(net, par){
   if(net === null) return 'empty';
   const d = net - par;
-  if(d <= -2) return 'eagle'; if(d === -1) return 'birdie';
+  if(d <= -3) return 'eagle'; if(d === -2) return 'eagle'; if(d === -1) return 'birdie';
   if(d === 0) return 'par';   if(d === 1)  return 'bogey';
   if(d === 2) return 'double'; return 'worse';
 }
 function getDiffLabel(net, par){
   if(net === null) return '';
   const d = net - par;
-  if(d <= -2) return d === -2 ? 'Eagle' : 'Albatros';
+  if(d <= -3) return 'Albatros';
+  if(d === -2) return 'Eagle';
   if(d === -1) return 'Birdie'; if(d === 0) return 'Par';
   if(d === 1)  return 'Bogey';  if(d === 2) return '+2';
   return '+' + d;
